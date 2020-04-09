@@ -1,7 +1,8 @@
 <html>
 
   <head>
-    <title>PERRERA</title>
+    <title>REFUGIO ANIMAL</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
     <script type="text/javascript" src="https://unpkg.com/fabric@4.0.0-beta.8/dist/fabric.js"></script>
@@ -10,30 +11,22 @@
   <body>
     
     <pre data-lang="html">
-          
+      <h1 style="width: 100%;text-align: center;">DISEÑA LAS ÁREAS DE TU REFUGIO ANIMAL</h1>            
       <div class="input-group">
-        <button onclick="AddArea()">Añadir nuevo area</button>
-        <button onclick="SaveMap()">Guardar mapas</button>
+        <button onclick="AddArea()">Añadir nuevo área</button>&nbsp;<button onclick="RemoveArea()">Eliminar ultimo área</button>&nbsp;<button onclick="SaveMap()">Guardar áreas</button>
       </div>
-      <div id="mapas">
-        <div class="input-group" id="div_0">
-          <h1>Area Principal</h1>
-          <button onclick="AddLine(0)">Añadir linea</button>
-          <button onclick="RemoveLine(0)">Quitar linea</button>
-          <canvas id="c_0" width="450" height="350" style="border:1px solid #ccc"></canvas>
-        </div>
-      </div>  
+      <div id="mapas" class="row"></div>  
     </pre>
   
     <script>
-      var canvas = [new fabric.Canvas('c_0', { selection: false })];
-      var num_canvas = 1
-      var lados  = [3];
-      var cx     = 75;
-      var cy     = 100;
-      var r      = 70;
+      var canvas = [];
+      var lados  = [];
+      var r      = 50;
       function init(id) {
+          changeLabel(id);
           fabric.Object.prototype.originX = fabric.Object.prototype.originY = 'center';
+          var cx = canvas[id].getWidth() / 2;
+          var cy = canvas[id].getHeight() / 2;
           var a = 360/lados[id];
           var lines =new Array();
           for(var i=0;i < lados[id];i++){
@@ -59,10 +52,12 @@
           }
 
           canvas[id].on('object:moving', function(e) {
-            var p = e.target;
-            p.line1 && p.line1.set({ 'x2': p.left, 'y2': p.top });
-            p.line2 && p.line2.set({ 'x1': p.left, 'y1': p.top });
-            canvas[id].renderAll();          
+            canvas[id].getObjects('circle').forEach((obj) => {
+                obj.line1.angle=0;
+                obj.line1 && obj.line1.set({ 'x2':obj.getPointByOrigin().x, 'y2': obj.getPointByOrigin().y});
+                obj.line2 && obj.line2.set({ 'x1':obj.getPointByOrigin().x, 'y1': obj.getPointByOrigin().y});
+            });    
+            canvas[id].renderAll();    
           });
 
       }
@@ -74,7 +69,7 @@
           strokeWidth: 1,
           radius: 3,
           fill: '#fff',
-          stroke: '#666'
+          stroke: '#666',
         });
         c.hasControls = c.hasBorders = false;
         c.line1 = line1;
@@ -87,12 +82,9 @@
           fill: 'red',
           stroke: 'red',
           strokeWidth: 1,
-          selectable: false,
-          evented: false
+          selectable: false
         });
       }
-
-      init(0);
 
       function RemoveLine(id) {
         if(lados[id]!=3){
@@ -102,36 +94,83 @@
           init(id);  
         }            
       }
+      function Rotate(id,angleOffset) {     
+        let canvasCenter = new fabric.Point(canvas[id].getWidth() / 2, canvas[id].getHeight() / 2);
+        let radians = fabric.util.degreesToRadians(angleOffset);
+        canvas[id].getObjects().forEach((obj) => {
+            let objectOrigin = new fabric.Point(obj.left, obj.top);
+            let new_loc = fabric.util.rotatePoint(objectOrigin, canvasCenter, radians);
+            obj.top = new_loc.y;
+            obj.left = new_loc.x;
+            obj.angle += Number(angleOffset);
+            obj.setCoords();
+        });
+        canvas[id].renderAll();
+      }
+
+      function RotateMenos(id) {     
+        var e = document.getElementById("grados_"+id);
+        Rotate(id,e.options[e.selectedIndex].value);
+      }
+
+      function RotateMas(id) {   
+        var e = document.getElementById("grados_"+id);
+        Rotate(id,Math.abs(e.options[e.selectedIndex].value));  
+      }
+
+
       function AddLine(id) {
         canvas[id].clear();
         var newLados= lados[id]+1;
         lados[id]=newLados;
         init(id);      
       }
+      function RemoveArea(){
+        var list = document.getElementById("mapas"); 
+        list.removeChild(list.childNodes[lados.length-1]);     
+        canvas.pop();
+        lados.pop();
+      }
+
       function AddArea() {
-        var nombreArea=prompt('¿Nombre del nuevo AREA?');
+        var nombreArea = prompt("¿Nombre del Área?",'Área '+(lados.length+1));
+        if(nombreArea==null){
+          return;
+        }
+        if(nombreArea.length==0){
+          nombreArea='Área '+(lados.length+1);
+        }
         var capa = document.getElementById("mapas");
         var div = document.createElement('div');
         div.setAttribute("id", "div_"+lados.length);
-        div.setAttribute("class", "input-group");
+        div.setAttribute("class", "col-sm-6 col-lg-3");
         capa.appendChild(div);
         var newDiv = document.getElementById("div_"+lados.length);
-        newDiv.innerHTML += '<h1>'+nombreArea+'</h1><button onclick="AddLine('+lados.length+
-        ')">Añadir linea</button><button onclick="RemoveLine('+lados.length+
-        ')">Quitar linea</button><canvas id="c_'+lados.length+
-        '" width="250" height="250" style="border:1px solid #ccc"></canvas>';
+        newDiv.innerHTML += '<h1>'+nombreArea+'</h1>'
+        +'<button onclick="RemoveLine('+lados.length+',90)">-</button>'
+        +'<span id="numLineas_'+lados.length+'"></span>'
+        +'&nbsp;<button onclick="AddLine('+lados.length+')">+</button>'
+        +'&nbsp;<button onclick="RotateMenos('+lados.length+')"><</button>'
+        +'&nbsp;<select id="grados_'+lados.length+'"><option value="-20">20°</option><option value="-45">45°</option><option value="-60">60°</option><option value="-90">90°</option><option value="-180">180°</option></select>'
+        +'&nbsp;<button onclick="RotateMas('+lados.length+')">></button>'
+        +'<canvas id="c_'+lados.length+'" width="320" height="450" style="border:1px solid #ccc"></canvas>';
         
-        canvas[lados.length]=new fabric.Canvas('c_'+lados.length, { selection: false });
+        canvas[lados.length]=new fabric.Canvas('c_'+lados.length, { selection: false});
         lados[lados.length]=3;
         init(lados.length-1);
       }
+
+      function changeLabel(id){
+        document.getElementById("numLineas_"+id).innerHTML = " Num. puntos: "+lados[id];
+      }
+
       function SaveMap() {
-        for(var i=0;i < canvas._objects.length;i++){
-          if(canvas._objects[i].x1){
-            console.log("linea1 x1="+canvas._objects[i].x1+" y1="+canvas._objects[i].y1);
-          }
-         
-        } 
+        canvas.forEach(function (canva,i) {
+          console.log("Area "+i);
+          canva.getObjects('line').forEach(function (obj) {
+            console.log("x1="+obj.x1+" y1="+obj.y1+" x2="+obj.x2+" y2="+obj.y2);
+          });
+        });   
       }
     </script>
 
