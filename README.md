@@ -1,6 +1,6 @@
 # happy-shelter
 App to manage animal shelters
 
-Fernando Varela's original idea
-Coded by Micael Díaz Trosch
+Fernando Varela: original idea and scientific advicer 
+Micael Díaz Trosch: software developer  
 

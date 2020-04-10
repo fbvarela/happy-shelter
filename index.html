@@ -43,10 +43,9 @@
       </div>
       <div class="panel-body" id="simuladorGuardado" style=" word-wrap: break-word;"></div>
     </div>
-      
 
-  
     <script>
+       $('#info').hide();
       var deleteIcon = "data:image/svg+xml,%3C%3Fxml version='1.0' encoding='utf-8'%3F%3E%3C!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN' 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'%3E%3Csvg version='1.1' id='Ebene_1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='595.275px' height='595.275px' viewBox='200 215 230 470' xml:space='preserve'%3E%3Ccircle style='fill:%23F44336;' cx='299.76' cy='439.067' r='218.516'/%3E%3Cg%3E%3Crect x='267.162' y='307.978' transform='matrix(0.7071 -0.7071 0.7071 0.7071 -222.6202 340.6915)' style='fill:white;' width='65.545' height='262.18'/%3E%3Crect x='266.988' y='308.153' transform='matrix(0.7071 0.7071 -0.7071 0.7071 398.3889 -83.3116)' style='fill:white;' width='65.544' height='262.179'/%3E%3C/g%3E%3C/svg%3E";
       var img = document.createElement('img');
       img.src = deleteIcon;
@@ -165,8 +164,14 @@
                   +'</div>'
               +'</div>'
           +'</div>'
-          +'<div class="col-md-9">'
+          +'<div class="col-md-7">'
             +'<canvas id="c_'+lados.length+'" width="700" height="400" style="border:1px solid #ccc"></canvas>'
+          +'</div>'
+          +'<div class="col-md-2">'
+            +'<div class="panel panel-default">'
+              +'<div class="panel-heading">Info</div>'
+              +'<div class="panel-body" id="info"></div>'
+            +'</div>'
           +'</div>'
         +'</div>'; 
 
@@ -214,15 +219,30 @@
             });
           }     
 
-          canvas[id].on('object:moving', function(e) {
-            canvas[id].getObjects('circle').forEach((obj) => {
-                obj.line1.angle=0;
-                obj.line1 && obj.line1.set({ 'x2':obj.getPointByOrigin().x, 'y2': obj.getPointByOrigin().y});
-                obj.line2 && obj.line2.set({ 'x1':obj.getPointByOrigin().x, 'y1': obj.getPointByOrigin().y});
-            });    
-            canvas[id].renderAll();    
+          canvas[id].on({
+            'object:moving': function(e) {
+                canvas[id].getObjects('circle').forEach((obj) => {
+                    obj.line1.angle=0;
+                    obj.line1 && obj.line1.set({'x2':obj.getPointByOrigin().x, 'y2': obj.getPointByOrigin().y});
+                    obj.line2 && obj.line2.set({'x1':obj.getPointByOrigin().x, 'y1': obj.getPointByOrigin().y});
+                });    
+                canvas[id].renderAll();    
+            },
+            'mouse:over': function(e) {
+              if(e.target && e.target.info){        
+                var info = e.target.info;  
+                $('#info').text('');
+                $('#info').append("numero de "+info.especie+": "+info.numero)
+                $('#info').show();
+              }
+            
+            },
+            'mouse:out': function(e) {
+              if(e.target && e.target.info){
+                $('#info').hide();
+              }
+            }
           });
-
       }
 
       function makeCircle(left, top, line1, line2) {
@@ -282,7 +302,6 @@
         Rotate(id,Math.abs(e.options[e.selectedIndex].value));  
       }
 
-
       function AddLine(id) {
         var img = canvas[id].getObjects('image');
         canvas[id].clear();
@@ -292,11 +311,11 @@
       }
 
       function AddChenilledCat(id) {
-        var info  = {numero_gatos:'3'};
+        var info  = {especie:'gatos',numero:'2'};
         makeImage(id,'img/kennel_cat.png','chenilleCat',info)
       }
       function AddChenilledDog(id) {
-        var info  = {numero_perros:'4'};
+        var info  = {especie:'perros',numero:'4'};
         makeImage(id,'img/kennel_dog.png','chenilleDog',info)
       }
 
