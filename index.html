@@ -292,10 +292,12 @@
       }
 
       function AddChenilledCat(id) {
-        makeImage(id,'img/kennel_cat.png','chenilleCat')
+        var info  = {numero_gatos:'3'};
+        makeImage(id,'img/kennel_cat.png','chenilleCat',info)
       }
       function AddChenilledDog(id) {
-        makeImage(id,'img/kennel_dog.png','chenilleDog')
+        var info  = {numero_perros:'4'};
+        makeImage(id,'img/kennel_dog.png','chenilleDog',info)
       }
 
       function AddOficina(id) {
@@ -317,7 +319,7 @@
         ctx.restore();
       }
 
-     function makeImage(canvasId,urlImg,idImg){
+     function makeImage(canvasId,urlImg,idImg,info){
         fabric.Object.prototype.controls.deleteControl = new fabric.Control({
           position: { x: 0.5, y: -0.5 },
           offsetY: 16,
@@ -332,7 +334,8 @@
             top: 50 ,
             width:50,
             height:50,
-            id: idImg
+            id: idImg,
+            info: info
             });
           canvas[canvasId].add(img1); 
         });
@@ -352,28 +355,49 @@
           $(simuladirGuardado).append("<b>Init Nombre del área = "+titleArea+"</b>");
           $(simuladirGuardado).append("<br><b>Lineas del área:</b><br>");
           canva.getObjects('line').forEach(function (obj) {
-            $(simuladirGuardado).append(JSON.stringify(obj)+"<br><br>");
+            $(simuladirGuardado).append("coords: "+obj.getCoords()+"<br><br>");
           });
           $(simuladirGuardado).append("<b>Circulos del área:</b><br>");
           canva.getObjects('circle').forEach(function (obj) {
-            $(simuladirGuardado).append(JSON.stringify(obj)+"<br><br>");
+            $(simuladirGuardado).append("left: "+obj.left+"<br>");
+            $(simuladirGuardado).append("top: "+obj.top+"<br>");
+            $(simuladirGuardado).append("linea1:  "+obj.line1.getCoords()+" <br>");
+            $(simuladirGuardado).append("linea2: "+obj.line2.getCoords()+"<br><br>");
           });
           $(simuladirGuardado).append("<b>Cheniles Perros:</b><br>");
           canva.getObjects('image').forEach(function (obj) {
             if(obj.id=='chenilleDog'){
-              $(simuladirGuardado).append(JSON.stringify(obj)+"<br><br>");
+              $(simuladirGuardado).append("type: "+obj.type+"<br>");
+              $(simuladirGuardado).append("left: "+obj.left+"<br>");
+              $(simuladirGuardado).append("top:  "+obj.top+" <br>");
+              $(simuladirGuardado).append("width: "+obj.width+"<br>");
+              $(simuladirGuardado).append("height: "+obj.height+"<br>");
+              $(simuladirGuardado).append("id: "+obj.id+"<br>");
+              $(simuladirGuardado).append("info: "+JSON.stringify(obj.info)+"<br><br>");
             }           
           });
           $(simuladirGuardado).append("<b>Cheniles Gatos:</b><br>");
           canva.getObjects('image').forEach(function (obj) {
             if(obj.id=='chenilleCat'){
-              $(simuladirGuardado).append(JSON.stringify(obj)+"<br><br>");
+              $(simuladirGuardado).append("type: "+obj.type+"<br>");
+              $(simuladirGuardado).append("left: "+obj.left+"<br>");
+              $(simuladirGuardado).append("top:  "+obj.top+" <br>");
+              $(simuladirGuardado).append("width: "+obj.width+"<br>");
+              $(simuladirGuardado).append("height: "+obj.height+"<br>");
+              $(simuladirGuardado).append("id: "+obj.id+"<br>");
+              $(simuladirGuardado).append("info: "+JSON.stringify(obj.info)+"<br><br>");
             }           
           });
           $(simuladirGuardado).append("<b>Oficinas:</b><br>");
           canva.getObjects('image').forEach(function (obj) {
             if(obj.id=='home'){
-              $(simuladirGuardado).append(JSON.stringify(obj)+"<br><br>");
+              $(simuladirGuardado).append("type: "+obj.type+"<br>");
+              $(simuladirGuardado).append("left: "+obj.left+"<br>");
+              $(simuladirGuardado).append("top:  "+obj.top+" <br>");
+              $(simuladirGuardado).append("width: "+obj.width+"<br>");
+              $(simuladirGuardado).append("height: "+obj.height+"<br>");
+              $(simuladirGuardado).append("id: "+obj.id+"<br>");
+              $(simuladirGuardado).append("info: "+JSON.stringify(obj.info)+"<br><br>");
             }      
           });
           $(simuladirGuardado).append("<b>End Nombre del área = "+titleArea+"</b><br>");
