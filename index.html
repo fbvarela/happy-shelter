@@ -349,30 +349,34 @@
          
         canvas.forEach(function (canva,i) {
           var titleArea = $("a[href$='tab_"+(i)+"']").text();
-          $(simuladirGuardado).append("<b>Init Nombre del área= "+titleArea+"</b>");
-          $(simuladirGuardado).append("<br>");
+          $(simuladirGuardado).append("<b>Init Nombre del área = "+titleArea+"</b>");
+          $(simuladirGuardado).append("<br><b>Lineas del área:</b><br>");
           canva.getObjects('line').forEach(function (obj) {
-            $(simuladirGuardado).append(JSON.stringify(obj));
+            $(simuladirGuardado).append(JSON.stringify(obj)+"<br><br>");
           });
-          $(simuladirGuardado).append("<br><b>Cheniles Perros:</b><br>");
+          $(simuladirGuardado).append("<b>Circulos del área:</b><br>");
+          canva.getObjects('circle').forEach(function (obj) {
+            $(simuladirGuardado).append(JSON.stringify(obj)+"<br><br>");
+          });
+          $(simuladirGuardado).append("<b>Cheniles Perros:</b><br>");
           canva.getObjects('image').forEach(function (obj) {
             if(obj.id=='chenilleDog'){
-              $(simuladirGuardado).append(JSON.stringify(obj));
+              $(simuladirGuardado).append(JSON.stringify(obj)+"<br><br>");
             }           
           });
-          $(simuladirGuardado).append("<br><b>Cheniles Gatos:</b><br>");
+          $(simuladirGuardado).append("<b>Cheniles Gatos:</b><br>");
           canva.getObjects('image').forEach(function (obj) {
             if(obj.id=='chenilleCat'){
-              $(simuladirGuardado).append(JSON.stringify(obj));
+              $(simuladirGuardado).append(JSON.stringify(obj)+"<br><br>");
             }           
           });
-          $(simuladirGuardado).append("<br><b>Oficinas:</b><br>");
+          $(simuladirGuardado).append("<b>Oficinas:</b><br>");
           canva.getObjects('image').forEach(function (obj) {
             if(obj.id=='home'){
-              $(simuladirGuardado).append(JSON.stringify(obj));
+              $(simuladirGuardado).append(JSON.stringify(obj)+"<br><br>");
             }      
           });
-          $(simuladirGuardado).append("<br><b>End Nombre del área= "+titleArea+"</b>");
+          $(simuladirGuardado).append("<b>End Nombre del área = "+titleArea+"</b><br>");
         });   
       }
    
