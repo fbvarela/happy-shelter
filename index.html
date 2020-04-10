@@ -24,7 +24,6 @@
   </head>
 
   <body>
-<<<<<<< HEAD
 
     <div class="btn-group" style="margin:10px;">
       <button type="button" onclick="AddAreaToTap()"     title="Añadir nuevo área"    class="btn btn-default btn-lg"><span class="glyphicon glyphicon-plus"></span> Área</button>
@@ -37,6 +36,12 @@
         <ul class="nav nav-tabs" role="tablist" id="myTab"></ul>
         <div class="tab-content" id="myTabContent"></div>
       </div>
+    </div>
+    <div class="panel panel-default" style="margin:10px;">
+      <div class="panel-heading">
+        <h3 class="panel-title">Simulador de guardado</h3>
+      </div>
+      <div class="panel-body" id="simuladorGuardado" style=" word-wrap: break-word;"></div>
     </div>
       
 
@@ -173,22 +178,6 @@
       }
 
       function init(id,imgs) {
-=======
-    
-    <pre data-lang="html">
-      <h1 style="width: 100%;text-align: center;">DISEÑA LAS ÁREAS DE TU REFUGIO ANIMAL</h1>            
-      <div class="input-group">
-        <button onclick="AddArea()">Añadir nuevo área</button>&nbsp;<button onclick="RemoveArea()">Eliminar ultimo área</button>&nbsp;<button onclick="SaveMap()">Guardar áreas</button>
-      </div>
-      <div id="mapas" class="row"></div>  
-    </pre>
-  
-    <script>
-      var canvas = [];
-      var lados  = [];
-      var r      = 50;
-      function init(id) {
->>>>>>> 25e85eab65eea28bc43ee40304a1e73924118a56
           changeLabel(id);
           fabric.Object.prototype.originX = fabric.Object.prototype.originY = 'center';
           var cx = canvas[id].getWidth() / 2;
@@ -301,7 +290,6 @@
         lados[id]=newLados;
         init(id,img);      
       }
-<<<<<<< HEAD
 
       function AddChenilledCat(id) {
         makeImage(id,'img/kennel_cat.png','chenilleCat')
@@ -349,80 +337,42 @@
           canvas[canvasId].add(img1); 
         });
       }
-=======
-      function RemoveArea(){
-        var list = document.getElementById("mapas"); 
-        list.removeChild(list.childNodes[lados.length-1]);     
-        canvas.pop();
-        lados.pop();
-      }
-
-      function AddArea() {
-        var nombreArea = prompt("¿Nombre del Área?",'Área '+(lados.length+1));
-        if(nombreArea==null){
-          return;
-        }
-        if(nombreArea.length==0){
-          nombreArea='Área '+(lados.length+1);
-        }
-        var capa = document.getElementById("mapas");
-        var div = document.createElement('div');
-        div.setAttribute("id", "div_"+lados.length);
-        div.setAttribute("class", "col-sm-6 col-lg-3");
-        capa.appendChild(div);
-        var newDiv = document.getElementById("div_"+lados.length);
-        newDiv.innerHTML += '<h1>'+nombreArea+'</h1>'
-        +'<button onclick="RemoveLine('+lados.length+',90)">-</button>'
-        +'<span id="numLineas_'+lados.length+'"></span>'
-        +'&nbsp;<button onclick="AddLine('+lados.length+')">+</button>'
-        +'&nbsp;<button onclick="RotateMenos('+lados.length+')"><</button>'
-        +'&nbsp;<select id="grados_'+lados.length+'"><option value="-20">20°</option><option value="-45">45°</option><option value="-60">60°</option><option value="-90">90°</option><option value="-180">180°</option></select>'
-        +'&nbsp;<button onclick="RotateMas('+lados.length+')">></button>'
-        +'<canvas id="c_'+lados.length+'" width="320" height="450" style="border:1px solid #ccc"></canvas>';
-        
-        canvas[lados.length]=new fabric.Canvas('c_'+lados.length, { selection: false});
-        lados[lados.length]=3;
-        init(lados.length-1);
-      }
->>>>>>> 25e85eab65eea28bc43ee40304a1e73924118a56
 
       function changeLabel(id){
         document.getElementById("numLineas_"+id).innerHTML = " Num. puntos: "+lados[id];
       }
 
       function SaveMap() {
+
+        var simuladirGuardado = $("#simuladorGuardado");
+        $(simuladirGuardado).text('');
+         
         canvas.forEach(function (canva,i) {
-<<<<<<< HEAD
           var titleArea = $("a[href$='tab_"+(i)+"']").text();
-          console.log("Init Nombre del área= "+titleArea);
+          $(simuladirGuardado).append("<b>Init Nombre del área= "+titleArea+"</b>");
+          $(simuladirGuardado).append("<br>");
           canva.getObjects('line').forEach(function (obj) {
-            console.log(obj);
+            $(simuladirGuardado).append(JSON.stringify(obj));
           });
-          console.log("Cheniles Perros:");
+          $(simuladirGuardado).append("<br><b>Cheniles Perros:</b><br>");
           canva.getObjects('image').forEach(function (obj) {
             if(obj.id=='chenilleDog'){
-              console.log(obj);
+              $(simuladirGuardado).append(JSON.stringify(obj));
             }           
           });
-          console.log("Cheniles Gatos:");
+          $(simuladirGuardado).append("<br><b>Cheniles Gatos:</b><br>");
           canva.getObjects('image').forEach(function (obj) {
             if(obj.id=='chenilleCat'){
-              console.log(obj);
+              $(simuladirGuardado).append(JSON.stringify(obj));
             }           
           });
-          console.log("Oficinas:");
+          $(simuladirGuardado).append("<br><b>Oficinas:</b><br>");
           canva.getObjects('image').forEach(function (obj) {
             if(obj.id=='home'){
-              console.log(obj);
+              $(simuladirGuardado).append(JSON.stringify(obj));
             }      
           });
-          console.log("End Nombre del área= "+titleArea);
-=======
-          console.log("Area "+i);
-          canva.getObjects('line').forEach(function (obj) {
-            console.log("x1="+obj.x1+" y1="+obj.y1+" x2="+obj.x2+" y2="+obj.y2);
-          });
->>>>>>> 25e85eab65eea28bc43ee40304a1e73924118a56
+          $(simuladirGuardado).append("<br><b>End Nombre del área= "+titleArea+"</b>");
         });   
       }
    
