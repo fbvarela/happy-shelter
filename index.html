@@ -1,41 +1,183 @@
 <html>
 
   <head>
-    <title>PERRERA</title>
+    <title>REFUGIO ANIMAL</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
     <script type="text/javascript" src="https://unpkg.com/fabric@4.0.0-beta.8/dist/fabric.js"></script>
+    <script src='https://kit.fontawesome.com/a076d05399.js'></script>
+    <style>
+      .glyphicon{
+        cursor: pointer;
+      }
+      .fas{
+        cursor: pointer;
+      }
+      .glyphicon_50 {
+        font-size: 50%;
+      }
+      .glyphicon_200 {
+        font-size: 200%;
+      }
+    </style>
   </head>
 
   <body>
-    
-    <pre data-lang="html">
-          
-      <div class="input-group">
-        <button onclick="AddArea()">Añadir nuevo area</button>
-        <button onclick="SaveMap()">Guardar mapas</button>
+
+    <div class="btn-group" style="margin:10px;">
+      <button type="button" onclick="AddAreaToTap()"     title="Añadir nuevo área"    class="btn btn-default btn-lg"><span class="glyphicon glyphicon-plus"></span> Área</button>
+      <button type="button" onclick="RemoveAreaToTap()"  title="Eliminar ultimo área" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-trash"></span> Área</button>
+      <button type="button" onclick="SaveMap()"          title="Guardar áreas"        class="btn btn-default btn-lg"><span class="glyphicon glyphicon-floppy-disk"></span> Áreas</button>
+      <button type="button" class="btn btn-default btn-lg" style="cursor:default ;">DISEÑA LAS ÁREAS DE TU REFUGIO ANIMAL</button>
+    </div>
+    <div class="panel panel-default" style="margin:10px;">
+      <div class="panel-body">
+        <ul class="nav nav-tabs" role="tablist" id="myTab"></ul>
+        <div class="tab-content" id="myTabContent"></div>
       </div>
-      <div id="mapas">
-        <div class="input-group" id="div_0">
-          <h1>Area Principal</h1>
-          <button onclick="AddLine(0)">Añadir linea</button>
-          <button onclick="RemoveLine(0)">Quitar linea</button>
-          <canvas id="c_0" width="450" height="350" style="border:1px solid #ccc"></canvas>
-        </div>
-      </div>  
-    </pre>
+    </div>
+      
+
   
     <script>
-      var canvas = [new fabric.Canvas('c_0', { selection: false })];
-      var num_canvas = 1
-      var lados  = [3];
-      var cx     = 75;
-      var cy     = 100;
-      var r      = 70;
-      function init(id) {
+      var deleteIcon = "data:image/svg+xml,%3C%3Fxml version='1.0' encoding='utf-8'%3F%3E%3C!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN' 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'%3E%3Csvg version='1.1' id='Ebene_1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='595.275px' height='595.275px' viewBox='200 215 230 470' xml:space='preserve'%3E%3Ccircle style='fill:%23F44336;' cx='299.76' cy='439.067' r='218.516'/%3E%3Cg%3E%3Crect x='267.162' y='307.978' transform='matrix(0.7071 -0.7071 0.7071 0.7071 -222.6202 340.6915)' style='fill:white;' width='65.545' height='262.18'/%3E%3Crect x='266.988' y='308.153' transform='matrix(0.7071 0.7071 -0.7071 0.7071 398.3889 -83.3116)' style='fill:white;' width='65.544' height='262.179'/%3E%3C/g%3E%3C/svg%3E";
+      var img = document.createElement('img');
+      img.src = deleteIcon;
+      var canvas = [];
+      var lados  = [];
+      var r      = 190;
+
+      $('#myTab a').click(function (e) {
+        e.preventDefault()
+        $(this).tab('show')
+      })
+
+      function EditTittleTap(id) {
+          var nombreArea = prompt("¿Nombre del Área?",$("a[href$='tab_"+(id)+"']").text());
+          if(nombreArea==null){
+            return;
+          }
+          var span = document.createElement('span');
+          span.setAttribute("class", "glyphicon glyphicon-pencil");
+          span.setAttribute("title", "Editar nombre del área");
+          span.setAttribute("onclick", "EditTittleTap("+id+")");
+          $("a[href$='tab_"+(id)+"']").text('');
+          $("a[href$='tab_"+(id)+"']").append(span);
+          $("a[href$='tab_"+(id)+"']").append(" ");
+          $("a[href$='tab_"+(id)+"']").append(nombreArea);
+      }
+
+      function RemoveAreaToTap(){
+        var myTab = document.getElementById("myTab"); 
+        var myTabContent = document.getElementById("myTabContent"); 
+        if(myTab.childNodes.length==0 || myTabContent.childNodes.length==0){
+          return
+        }
+        if($(myTab.childNodes[lados.length-1]).hasClass('active') && myTab.childNodes.length>1){
+          $("a[href$='tab_"+(lados.length-2)+"']").click ();
+        }
+        myTabContent.removeChild(myTabContent.childNodes[lados.length-1]);     
+        myTab.removeChild(myTab.childNodes[lados.length-1]);     
+        canvas.pop();
+        lados.pop();
+      }
+
+      function AddAreaToTap() {
+        var nombreArea = prompt("¿Nombre del Área?",'Área '+(lados.length+1));
+        if(nombreArea==null){
+          return;
+        }
+        if(nombreArea.length==0){
+          nombreArea='Área '+(lados.length+1);
+        }
+        
+        var myTab = document.getElementById("myTab");
+        var li = document.createElement('li');
+        var a = document.createElement('a');
+        var span = document.createElement('span');
+        var createAText = document.createTextNode(" "+nombreArea);
+        span.setAttribute("class", "glyphicon glyphicon-pencil");
+        span.setAttribute("title", "Editar nombre del área");
+        span.setAttribute("onclick", "EditTittleTap("+lados.length+")");
+        a.setAttribute("href", "#tab_"+lados.length); 
+        a.setAttribute("role", "tab");
+        a.setAttribute("data-toggle", "tab");
+        a.appendChild(span);
+        a.appendChild(createAText);      
+        li.appendChild(a);
+        myTab.appendChild(li);
+
+        var myTabContent = document.getElementById("myTabContent");
+        myTabContent.setAttribute("style", "margin-top:10px");
+        var div = document.createElement('div');
+        div.setAttribute("id", "tab_"+lados.length);
+        div.setAttribute("class", "tab-pane");
+        myTabContent.appendChild(div);
+        var newDiv = document.getElementById("tab_"+lados.length);
+        newDiv.innerHTML += 
+
+        '<div class="row">'
+          +'<div class="col-md-3">'
+              +'<div class="row">'
+                  +'<div class="col-md-1">'
+                    +'<span onclick="RemoveLine('+lados.length+')" class="glyphicon glyphicon-minus-sign" title="Eliminar un punto del área"></span>'
+                  +'</div>'
+                  +'<div class="col-md-9" style="text-align:center">'
+                    +'<span id="numLineas_'+lados.length+'"></span>'
+                  +'</div>'  
+                  +'<div class="col-md-1">'
+                    +'<span onclick="AddLine('+lados.length+')" class="glyphicon glyphicon-plus-sign" title="Añadir un punto al área"></span>'
+                  +'</div>'
+              +'</div>'
+              +'<div class="row">'
+                +'<div class="col-md-12">&nbsp;'
+                +'</div>'
+              +'</div>'
+              +'<div class="row">'    
+                  +'<div class="col-md-1">'
+                    +'<span onclick="RotateMenos('+lados.length+')" class="glyphicon glyphicon-chevron-left" title="Rotar todo hacia la izquierda"></span>'
+                  +'</div>' 
+                  +'<div class="col-md-9" style="text-align:center">' 
+                    +'<select id="grados_'+lados.length+'"><option value="-20">20°</option><option value="-45">45°</option><option value="-60">60°</option><option value="-90">90°</option><option value="-180">180°</option></select>'
+                  +'</div>' 
+                  +'<div class="col-md-1">' 
+                    +'<span onclick="RotateMas('+lados.length+')" class="glyphicon glyphicon-chevron-right" title="Rotar todo hacia la derecha"></span>'
+                  +'</div>'
+              +'</div>'
+              +'<div class="row">'
+                +'<div class="col-md-12">&nbsp;'
+                +'</div>'
+              +'</div>'
+              +'<div class="row">'    
+                  +'<div class="col-md-12">'   
+                        +'<div class="btn-group">'
+                          +'<button type="button" onclick="AddChenilledDog('+lados.length+')"  title="Añadir chenil de perros" class="btn btn-default btn-lg"><span class="fas fa-dog" style="font-size:36px"></span></button>'
+                          +'<button type="button" onclick="AddChenilledCat('+lados.length+')"  title="Añadir chenil de gatos"  class="btn btn-default btn-lg"><span class="fas fa-cat" style="font-size:36px"></span></button>'
+                          +'<button type="button" onclick="AddOficina('+lados.length+')"       title="Añadir oficina"          class="btn btn-default btn-lg"><span class="glyphicon_200 glyphicon glyphicon-home"></span></button>'
+                        +'</div>'
+                  +'</div>'
+              +'</div>'
+          +'</div>'
+          +'<div class="col-md-9">'
+            +'<canvas id="c_'+lados.length+'" width="700" height="400" style="border:1px solid #ccc"></canvas>'
+          +'</div>'
+        +'</div>'; 
+
+        $("a[href$='tab_"+lados.length+"']").click ();
+        canvas[lados.length]=new fabric.Canvas('c_'+lados.length, { selection: false});
+        lados[lados.length]=4;
+        init(lados.length-1);
+        
+      }
+
+      function init(id,imgs) {
+          changeLabel(id);
           fabric.Object.prototype.originX = fabric.Object.prototype.originY = 'center';
+          var cx = canvas[id].getWidth() / 2;
+          var cy = canvas[id].getHeight() / 2;
           var a = 360/lados[id];
-          var lines =new Array();
+          var lines =new Array();              
           for(var i=0;i < lados[id];i++){
               var aRad=  (Math.PI / 180) * (a*(i+1));
               Xp = cx+r * Math.cos(aRad);
@@ -58,11 +200,21 @@
               }              
           }
 
+          Rotate(id,45);
+
+          if(imgs !=undefined){
+              imgs.forEach(function (img) {
+              canvas[id].add(img);
+            });
+          }     
+
           canvas[id].on('object:moving', function(e) {
-            var p = e.target;
-            p.line1 && p.line1.set({ 'x2': p.left, 'y2': p.top });
-            p.line2 && p.line2.set({ 'x1': p.left, 'y1': p.top });
-            canvas[id].renderAll();          
+            canvas[id].getObjects('circle').forEach((obj) => {
+                obj.line1.angle=0;
+                obj.line1 && obj.line1.set({ 'x2':obj.getPointByOrigin().x, 'y2': obj.getPointByOrigin().y});
+                obj.line2 && obj.line2.set({ 'x1':obj.getPointByOrigin().x, 'y1': obj.getPointByOrigin().y});
+            });    
+            canvas[id].renderAll();    
           });
 
       }
@@ -72,9 +224,9 @@
           left: left,
           top: top,
           strokeWidth: 1,
-          radius: 3,
+          radius: 5,
           fill: '#fff',
-          stroke: '#666'
+          stroke: '#666',
         });
         c.hasControls = c.hasBorders = false;
         c.line1 = line1;
@@ -87,52 +239,133 @@
           fill: 'red',
           stroke: 'red',
           strokeWidth: 1,
-          selectable: false,
-          evented: false
+          selectable: false
         });
       }
 
-      init(0);
-
       function RemoveLine(id) {
         if(lados[id]!=3){
+          var img = canvas[id].getObjects('image');
           canvas[id].clear();
           var newLados= lados[id]-1;
           lados[id]=newLados;
-          init(id);  
+          init(id,img);  
         }            
       }
+      function Rotate(id,angleOffset) {     
+        let canvasCenter = new fabric.Point(canvas[id].getWidth() / 2, canvas[id].getHeight() / 2);
+        let radians = fabric.util.degreesToRadians(angleOffset);
+        canvas[id].getObjects().forEach((obj) => {
+            let objectOrigin = new fabric.Point(obj.left, obj.top);
+            let new_loc = fabric.util.rotatePoint(objectOrigin, canvasCenter, radians);
+            obj.top = new_loc.y;
+            obj.left = new_loc.x;
+            obj.angle += Number(angleOffset);
+            obj.setCoords();
+        });
+        canvas[id].renderAll();
+      }
+
+      function RotateMenos(id) {     
+        var e = document.getElementById("grados_"+id);
+        Rotate(id,e.options[e.selectedIndex].value);
+      }
+
+      function RotateMas(id) {   
+        var e = document.getElementById("grados_"+id);
+        Rotate(id,Math.abs(e.options[e.selectedIndex].value));  
+      }
+
+
       function AddLine(id) {
+        var img = canvas[id].getObjects('image');
         canvas[id].clear();
         var newLados= lados[id]+1;
         lados[id]=newLados;
-        init(id);      
+        init(id,img);      
       }
-      function AddArea() {
-        var nombreArea=prompt('¿Nombre del nuevo AREA?');
-        var capa = document.getElementById("mapas");
-        var div = document.createElement('div');
-        div.setAttribute("id", "div_"+lados.length);
-        div.setAttribute("class", "input-group");
-        capa.appendChild(div);
-        var newDiv = document.getElementById("div_"+lados.length);
-        newDiv.innerHTML += '<h1>'+nombreArea+'</h1><button onclick="AddLine('+lados.length+
-        ')">Añadir linea</button><button onclick="RemoveLine('+lados.length+
-        ')">Quitar linea</button><canvas id="c_'+lados.length+
-        '" width="250" height="250" style="border:1px solid #ccc"></canvas>';
-        
-        canvas[lados.length]=new fabric.Canvas('c_'+lados.length, { selection: false });
-        lados[lados.length]=3;
-        init(lados.length-1);
+
+      function AddChenilledCat(id) {
+        makeImage(id,'img/kennel_cat.png','chenilleCat')
       }
+      function AddChenilledDog(id) {
+        makeImage(id,'img/kennel_dog.png','chenilleDog')
+      }
+
+      function AddOficina(id) {
+        makeImage(id,'img/casa2.png','home');
+      }
+
+      function deleteObject(eventData, target) {
+        var canvas = target.canvas;
+            canvas.remove(target);
+            canvas.requestRenderAll();
+      }
+      
+      function renderIcon(ctx, left, top, styleOverride, fabricObject) {
+        var size = this.cornerSize;
+        ctx.save();
+        ctx.translate(left, top);
+        ctx.rotate(fabric.util.degreesToRadians(fabricObject.angle));
+        ctx.drawImage(img, -size/2, -size/2, size, size);
+        ctx.restore();
+      }
+
+     function makeImage(canvasId,urlImg,idImg){
+        fabric.Object.prototype.controls.deleteControl = new fabric.Control({
+          position: { x: 0.5, y: -0.5 },
+          offsetY: 16,
+          cursorStyle: 'pointer',
+          mouseUpHandler: deleteObject,
+          render: renderIcon,
+          cornerSize: 24
+        });
+        fabric.Image.fromURL(urlImg, function(myImg) {
+          var img1 = myImg.set({ 
+            left: 100, 
+            top: 50 ,
+            width:50,
+            height:50,
+            id: idImg
+            });
+          canvas[canvasId].add(img1); 
+        });
+      }
+
+      function changeLabel(id){
+        document.getElementById("numLineas_"+id).innerHTML = " Num. puntos: "+lados[id];
+      }
+
       function SaveMap() {
-        for(var i=0;i < canvas._objects.length;i++){
-          if(canvas._objects[i].x1){
-            console.log("linea1 x1="+canvas._objects[i].x1+" y1="+canvas._objects[i].y1);
-          }
-         
-        } 
+        canvas.forEach(function (canva,i) {
+          var titleArea = $("a[href$='tab_"+(i)+"']").text();
+          console.log("Init Nombre del área= "+titleArea);
+          canva.getObjects('line').forEach(function (obj) {
+            console.log(obj);
+          });
+          console.log("Cheniles Perros:");
+          canva.getObjects('image').forEach(function (obj) {
+            if(obj.id=='chenilleDog'){
+              console.log(obj);
+            }           
+          });
+          console.log("Cheniles Gatos:");
+          canva.getObjects('image').forEach(function (obj) {
+            if(obj.id=='chenilleCat'){
+              console.log(obj);
+            }           
+          });
+          console.log("Oficinas:");
+          canva.getObjects('image').forEach(function (obj) {
+            if(obj.id=='home'){
+              console.log(obj);
+            }      
+          });
+          console.log("End Nombre del área= "+titleArea);
+        });   
       }
+   
+     
     </script>
 
   </body>
