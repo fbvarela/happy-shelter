@@ -1,12 +1,17 @@
 <html>
-
   <head>
     <title>REFUGIO ANIMAL</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js"></script>
+    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="https://unpkg.com/fabric@4.0.0-beta.8/dist/fabric.js"></script>
-    <script src='https://kit.fontawesome.com/a076d05399.js'></script>
+    <script type="text/javascript" src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <script type="text/javascript" src='js/globalVariables.js'></script>
+    <script type="text/javascript" src='js/enum/itemEnum.js'></script>
+    <script type="text/javascript" src='js/areagenerator.js'></script>
+    <script type="text/javascript" src='js/panelInfo.js'></script>
+    <script type="text/javascript" src='js/controlPanel.js'></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
     <style>
       .glyphicon{
         cursor: pointer;
@@ -22,409 +27,127 @@
       }
     </style>
   </head>
-
   <body>
-
     <div class="btn-group" style="margin:10px;">
-      <button type="button" onclick="AddAreaToTap()"     title="Añadir nuevo área"    class="btn btn-default btn-lg"><span class="glyphicon glyphicon-plus"></span> Área</button>
-      <button type="button" onclick="RemoveAreaToTap()"  title="Eliminar ultimo área" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-trash"></span> Área</button>
-      <button type="button" onclick="SaveMap()"          title="Guardar áreas"        class="btn btn-default btn-lg"><span class="glyphicon glyphicon-floppy-disk"></span> Áreas</button>
-      <button type="button" class="btn btn-default btn-lg" style="cursor:default ;">DISEÑA LAS ÁREAS DE TU REFUGIO ANIMAL</button>
+      <button type="button" id="addArea"     title="Añadir nuevo área"    class="btn btn-default btn-lg"><span class="glyphicon glyphicon-plus"></span> Área</button>
+      <button type="button" id="deleteArea"  title="Eliminar ultimo área" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-trash"></span> Área</button>
+      <button type="button" id="save"        title="Guardar"              class="btn btn-default btn-lg"><span class="glyphicon glyphicon-floppy-disk"></span> Guardar</button>
+      <span type="button" class="btn btn-default btn-lg" style="cursor:default;">DISEÑA LAS ÁREAS DE TU REFUGIO ANIMAL</span>
     </div>
-    <div class="panel panel-default" style="margin:10px;">
+
+    <div class="panel panel-default" style="margin:10px;display:none;" id="areaPanel">
       <div class="panel-body">
-        <ul class="nav nav-tabs" role="tablist" id="myTab"></ul>
-        <div class="tab-content" id="myTabContent"></div>
+        <ul class="nav nav-tabs" role="tablist" id="areaPanelTab"></ul>
+        <div class="tab-content" id="areaPanelTabContent"></div>
       </div>
     </div>
-    <div class="panel panel-default" style="margin:10px;">
+
+    <div id="hiddenRow" style="display:none;">
+      <div class="row">
+        <div class="col-md-3">
+          <div class="panel panel-default">
+            <div class="panel-heading">Panel de control</div>
+            <div class="panel-body">
+              <div class="panel panel-default">
+                <div class="panel-heading">Área</div>
+                <div class="panel-body">
+                  <div class="row" style="text-align: center;">
+                    <div class="col-md-12">
+                      <div class="btn-group">
+                        <button type="button" class="btn btn-default" style="height:34px" onclick="removeLine()"  title="Eliminar un punto del área"><span class="glyphicon glyphicon-minus"></span></button>
+                        <span   type="button" class="btn btn-default" style="cursor:default;">Num. puntos: <span id="numberPointsArea"></span></span>
+                        <button type="button" class="btn btn-default" style="height:34px"  onclick="addLine()" title="Añadir un punto al área"><span class="glyphicon glyphicon-plus"></span></button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12">&nbsp;</div>
+                  </div>
+                  <div class="row" style="text-align: center;">
+                    <div class="col-md-12">
+                      <div class="btn-group">
+                        <button type="button" class="btn btn-default" style="height:34px"  onclick="rotate('left')"  title="Rotar todo hacia la izquierda"><span class="glyphicon glyphicon-chevron-left"></span></button>
+                        <select id="grados"   class="btn btn-default" style="height:34px"><option value="-20">20°</option><option value="-45">45°</option><option value="-60">60°</option><option value="-90">90°</option><option value="-180">180°</option></select>
+                        <button type="button" class="btn btn-default" style="height:34px"  onclick="rotate('right')" title="Rotar todo hacia la derecha"><span class="glyphicon glyphicon-chevron-right"></span></button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12">&nbsp;</div>
+                  </div>
+                </div>
+              </div>
+              <div class="row" style="text-align: center;">
+                <div class="col-md-12">
+                  <div class="btn-group">
+                    <button type="button" onclick="addItem(new item(ITEM.KENNEL_DOG.id))" title="Añadir chenil de perros" class="btn btn-default btn-lg"><span class="fas fa-dog" style="font-size:36px"></span></button>
+                    <button type="button" onclick="addItem(new item(ITEM.KENNEL_CAT.id))" title="Añadir chenil de gatos"  class="btn btn-default btn-lg"><span class="fas fa-cat" style="font-size:36px"></span></button>
+                    <button type="button" onclick="addItem(new item(ITEM.OFFICE.id))"     title="Añadir oficina"          class="btn btn-default btn-lg"><span class="glyphicon_200 glyphicon glyphicon-home"></span></button>
+                    <button type="button" onclick="addItem(new item(ITEM.PUTIL.id))"     title="Añadir putil"          class="btn btn-default btn-lg"><span class="glyphicon_200 glyphicon glyphicon-home"></span></button>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-7">
+          <canvas width="700" height="400" style="border:1px solid #ccc"></canvas>
+        </div>
+        <div class="col-md-2">
+          <div class="panel panel-default">
+            <div class="panel-heading">Info</div>
+            <div class="panel-body" id="info" style="display: none;">
+              <div class="row">
+                <div class="col-md-12" style="text-align: center;">
+                  <button type="button" onclick="addFile()" title="Añadir ficha" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-plus"></span> Ficha</button>
+                </div>
+              </div>
+              <div id="infoFiles"></div>
+            </div>
+            </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel panel-default" style="margin:10px;display:none;" id="simulatorSavePanel">
       <div class="panel-heading">
         <h3 class="panel-title">Simulador de guardado</h3>
       </div>
-      <div class="panel-body" id="simuladorGuardado" style=" word-wrap: break-word;"></div>
+      <div class="panel-body" id="simulatorSavePanelBody" style=" word-wrap: break-word;"></div>
     </div>
 
-    <script>
-       $('#info').hide();
-      var deleteIcon = "data:image/svg+xml,%3C%3Fxml version='1.0' encoding='utf-8'%3F%3E%3C!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN' 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'%3E%3Csvg version='1.1' id='Ebene_1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='595.275px' height='595.275px' viewBox='200 215 230 470' xml:space='preserve'%3E%3Ccircle style='fill:%23F44336;' cx='299.76' cy='439.067' r='218.516'/%3E%3Cg%3E%3Crect x='267.162' y='307.978' transform='matrix(0.7071 -0.7071 0.7071 0.7071 -222.6202 340.6915)' style='fill:white;' width='65.545' height='262.18'/%3E%3Crect x='266.988' y='308.153' transform='matrix(0.7071 0.7071 -0.7071 0.7071 398.3889 -83.3116)' style='fill:white;' width='65.544' height='262.179'/%3E%3C/g%3E%3C/svg%3E";
-      var img = document.createElement('img');
-      img.src = deleteIcon;
-      var canvas = [];
-      var lados  = [];
-      var r      = 190;
-
-      $('#myTab a').click(function (e) {
-        e.preventDefault()
-        $(this).tab('show')
-      })
-
-      function EditTittleTap(id) {
-          var nombreArea = prompt("¿Nombre del Área?",$("a[href$='tab_"+(id)+"']").text());
-          if(nombreArea==null){
-            return;
-          }
-          var span = document.createElement('span');
-          span.setAttribute("class", "glyphicon glyphicon-pencil");
-          span.setAttribute("title", "Editar nombre del área");
-          span.setAttribute("onclick", "EditTittleTap("+id+")");
-          $("a[href$='tab_"+(id)+"']").text('');
-          $("a[href$='tab_"+(id)+"']").append(span);
-          $("a[href$='tab_"+(id)+"']").append(" ");
-          $("a[href$='tab_"+(id)+"']").append(nombreArea);
-      }
-
-      function RemoveAreaToTap(){
-        var myTab = document.getElementById("myTab"); 
-        var myTabContent = document.getElementById("myTabContent"); 
-        if(myTab.childNodes.length==0 || myTabContent.childNodes.length==0){
-          return
-        }
-        if($(myTab.childNodes[lados.length-1]).hasClass('active') && myTab.childNodes.length>1){
-          $("a[href$='tab_"+(lados.length-2)+"']").click ();
-        }
-        myTabContent.removeChild(myTabContent.childNodes[lados.length-1]);     
-        myTab.removeChild(myTab.childNodes[lados.length-1]);     
-        canvas.pop();
-        lados.pop();
-      }
-
-      function AddAreaToTap() {
-        var nombreArea = prompt("¿Nombre del Área?",'Área '+(lados.length+1));
-        if(nombreArea==null){
-          return;
-        }
-        if(nombreArea.length==0){
-          nombreArea='Área '+(lados.length+1);
-        }
-        
-        var myTab = document.getElementById("myTab");
-        var li = document.createElement('li');
-        var a = document.createElement('a');
-        var span = document.createElement('span');
-        var createAText = document.createTextNode(" "+nombreArea);
-        span.setAttribute("class", "glyphicon glyphicon-pencil");
-        span.setAttribute("title", "Editar nombre del área");
-        span.setAttribute("onclick", "EditTittleTap("+lados.length+")");
-        a.setAttribute("href", "#tab_"+lados.length); 
-        a.setAttribute("role", "tab");
-        a.setAttribute("data-toggle", "tab");
-        a.appendChild(span);
-        a.appendChild(createAText);      
-        li.appendChild(a);
-        myTab.appendChild(li);
-
-        var myTabContent = document.getElementById("myTabContent");
-        myTabContent.setAttribute("style", "margin-top:10px");
-        var div = document.createElement('div');
-        div.setAttribute("id", "tab_"+lados.length);
-        div.setAttribute("class", "tab-pane");
-        myTabContent.appendChild(div);
-        var newDiv = document.getElementById("tab_"+lados.length);
-        newDiv.innerHTML += 
-
-        '<div class="row">'
-          +'<div class="col-md-3">'
-              +'<div class="row">'
-                  +'<div class="col-md-1">'
-                    +'<span onclick="RemoveLine('+lados.length+')" class="glyphicon glyphicon-minus-sign" title="Eliminar un punto del área"></span>'
-                  +'</div>'
-                  +'<div class="col-md-9" style="text-align:center">'
-                    +'<span id="numLineas_'+lados.length+'"></span>'
-                  +'</div>'  
-                  +'<div class="col-md-1">'
-                    +'<span onclick="AddLine('+lados.length+')" class="glyphicon glyphicon-plus-sign" title="Añadir un punto al área"></span>'
-                  +'</div>'
-              +'</div>'
-              +'<div class="row">'
-                +'<div class="col-md-12">&nbsp;'
-                +'</div>'
-              +'</div>'
-              +'<div class="row">'    
-                  +'<div class="col-md-1">'
-                    +'<span onclick="RotateMenos('+lados.length+')" class="glyphicon glyphicon-chevron-left" title="Rotar todo hacia la izquierda"></span>'
-                  +'</div>' 
-                  +'<div class="col-md-9" style="text-align:center">' 
-                    +'<select id="grados_'+lados.length+'"><option value="-20">20°</option><option value="-45">45°</option><option value="-60">60°</option><option value="-90">90°</option><option value="-180">180°</option></select>'
-                  +'</div>' 
-                  +'<div class="col-md-1">' 
-                    +'<span onclick="RotateMas('+lados.length+')" class="glyphicon glyphicon-chevron-right" title="Rotar todo hacia la derecha"></span>'
-                  +'</div>'
-              +'</div>'
-              +'<div class="row">'
-                +'<div class="col-md-12">&nbsp;'
-                +'</div>'
-              +'</div>'
-              +'<div class="row">'    
-                  +'<div class="col-md-12">'   
-                        +'<div class="btn-group">'
-                          +'<button type="button" onclick="AddChenilledDog('+lados.length+')"  title="Añadir chenil de perros" class="btn btn-default btn-lg"><span class="fas fa-dog" style="font-size:36px"></span></button>'
-                          +'<button type="button" onclick="AddChenilledCat('+lados.length+')"  title="Añadir chenil de gatos"  class="btn btn-default btn-lg"><span class="fas fa-cat" style="font-size:36px"></span></button>'
-                          +'<button type="button" onclick="AddOficina('+lados.length+')"       title="Añadir oficina"          class="btn btn-default btn-lg"><span class="glyphicon_200 glyphicon glyphicon-home"></span></button>'
-                        +'</div>'
-                  +'</div>'
-              +'</div>'
-          +'</div>'
-          +'<div class="col-md-7">'
-            +'<canvas id="c_'+lados.length+'" width="700" height="400" style="border:1px solid #ccc"></canvas>'
-          +'</div>'
-          +'<div class="col-md-2">'
-            +'<div class="panel panel-default">'
-              +'<div class="panel-heading">Info</div>'
-              +'<div class="panel-body" id="info"></div>'
-            +'</div>'
-          +'</div>'
-        +'</div>'; 
-
-        $("a[href$='tab_"+lados.length+"']").click ();
-        canvas[lados.length]=new fabric.Canvas('c_'+lados.length, { selection: false});
-        lados[lados.length]=4;
-        init(lados.length-1);
-        
-      }
-
-      function init(id,imgs) {
-          changeLabel(id);
-          fabric.Object.prototype.originX = fabric.Object.prototype.originY = 'center';
-          var cx = canvas[id].getWidth() / 2;
-          var cy = canvas[id].getHeight() / 2;
-          var a = 360/lados[id];
-          var lines =new Array();              
-          for(var i=0;i < lados[id];i++){
-              var aRad=  (Math.PI / 180) * (a*(i+1));
-              Xp = cx+r * Math.cos(aRad);
-              Yp = cy+r * Math.sin(aRad);
-              lines[i]={x2:Xp, y2:Yp};
-              if(i != 0){
-                lines[i] = makeLine([lines[i-1].x2, lines[i-1].y2, Xp, Yp]);
-                canvas[id].add(lines[i]);
-                if(i != 1){
-                  canvas[id].add(makeCircle(lines[i].get('x1'), lines[i].get('y1'), lines[i-1], lines[i]));
-                }               
-                if(i == lados[id]-1){
-                  lines[0] = makeLine([Xp, Yp, lines[0].x2, lines[0].y2]);
-                  canvas[id].add(
-                    lines[0],
-                    makeCircle(lines[0].get('x1'), lines[0].get('y1'), lines[lines.length-1], lines[0]),
-                    makeCircle(lines[1].get('x1'), lines[1].get('y1'), lines[0], lines[1])
-                  );         
-                }
-              }              
-          }
-
-          Rotate(id,45);
-
-          if(imgs !=undefined){
-              imgs.forEach(function (img) {
-              canvas[id].add(img);
-            });
-          }     
-
-          canvas[id].on({
-            'object:moving': function(e) {
-                canvas[id].getObjects('circle').forEach((obj) => {
-                    obj.line1.angle=0;
-                    obj.line1 && obj.line1.set({'x2':obj.getPointByOrigin().x, 'y2': obj.getPointByOrigin().y});
-                    obj.line2 && obj.line2.set({'x1':obj.getPointByOrigin().x, 'y1': obj.getPointByOrigin().y});
-                });    
-                canvas[id].renderAll();    
-            },
-            'mouse:over': function(e) {
-              if(e.target && e.target.info){        
-                var info = e.target.info;  
-                $('#info').text('');
-                $('#info').append("numero de "+info.especie+": "+info.numero)
-                $('#info').show();
-              }
-            
-            },
-            'mouse:out': function(e) {
-              if(e.target && e.target.info){
-                $('#info').hide();
-              }
-            }
-          });
-      }
-
-      function makeCircle(left, top, line1, line2) {
-        var c = new fabric.Circle({
-          left: left,
-          top: top,
-          strokeWidth: 1,
-          radius: 5,
-          fill: '#fff',
-          stroke: '#666',
-        });
-        c.hasControls = c.hasBorders = false;
-        c.line1 = line1;
-        c.line2 = line2;
-        return c;
-      }
-
-      function makeLine(coords) {
-        return new fabric.Line(coords, {
-          fill: 'red',
-          stroke: 'red',
-          strokeWidth: 1,
-          selectable: false
-        });
-      }
-
-      function RemoveLine(id) {
-        if(lados[id]!=3){
-          var img = canvas[id].getObjects('image');
-          canvas[id].clear();
-          var newLados= lados[id]-1;
-          lados[id]=newLados;
-          init(id,img);  
-        }            
-      }
-      function Rotate(id,angleOffset) {     
-        let canvasCenter = new fabric.Point(canvas[id].getWidth() / 2, canvas[id].getHeight() / 2);
-        let radians = fabric.util.degreesToRadians(angleOffset);
-        canvas[id].getObjects().forEach((obj) => {
-            let objectOrigin = new fabric.Point(obj.left, obj.top);
-            let new_loc = fabric.util.rotatePoint(objectOrigin, canvasCenter, radians);
-            obj.top = new_loc.y;
-            obj.left = new_loc.x;
-            obj.angle += Number(angleOffset);
-            obj.setCoords();
-        });
-        canvas[id].renderAll();
-      }
-
-      function RotateMenos(id) {     
-        var e = document.getElementById("grados_"+id);
-        Rotate(id,e.options[e.selectedIndex].value);
-      }
-
-      function RotateMas(id) {   
-        var e = document.getElementById("grados_"+id);
-        Rotate(id,Math.abs(e.options[e.selectedIndex].value));  
-      }
-
-      function AddLine(id) {
-        var img = canvas[id].getObjects('image');
-        canvas[id].clear();
-        var newLados= lados[id]+1;
-        lados[id]=newLados;
-        init(id,img);      
-      }
-
-      function AddChenilledCat(id) {
-        var info  = {especie:'gatos',numero:'2'};
-        makeImage(id,'img/kennel_cat.png','chenilleCat',info)
-      }
-      function AddChenilledDog(id) {
-        var info  = {especie:'perros',numero:'4'};
-        makeImage(id,'img/kennel_dog.png','chenilleDog',info)
-      }
-
-      function AddOficina(id) {
-        makeImage(id,'img/casa2.png','home');
-      }
-
-      function deleteObject(eventData, target) {
-        var canvas = target.canvas;
-            canvas.remove(target);
-            canvas.requestRenderAll();
-      }
-      
-      function renderIcon(ctx, left, top, styleOverride, fabricObject) {
-        var size = this.cornerSize;
-        ctx.save();
-        ctx.translate(left, top);
-        ctx.rotate(fabric.util.degreesToRadians(fabricObject.angle));
-        ctx.drawImage(img, -size/2, -size/2, size, size);
-        ctx.restore();
-      }
-
-     function makeImage(canvasId,urlImg,idImg,info){
-        fabric.Object.prototype.controls.deleteControl = new fabric.Control({
-          position: { x: 0.5, y: -0.5 },
-          offsetY: 16,
-          cursorStyle: 'pointer',
-          mouseUpHandler: deleteObject,
-          render: renderIcon,
-          cornerSize: 24
-        });
-        fabric.Image.fromURL(urlImg, function(myImg) {
-          var img1 = myImg.set({ 
-            left: 100, 
-            top: 50 ,
-            width:50,
-            height:50,
-            id: idImg,
-            info: info
-            });
-          canvas[canvasId].add(img1); 
-        });
-      }
-
-      function changeLabel(id){
-        document.getElementById("numLineas_"+id).innerHTML = " Num. puntos: "+lados[id];
-      }
-
-      function SaveMap() {
-
-        var simuladirGuardado = $("#simuladorGuardado");
-        $(simuladirGuardado).text('');
-         
-        canvas.forEach(function (canva,i) {
-          var titleArea = $("a[href$='tab_"+(i)+"']").text();
-          $(simuladirGuardado).append("<b>Init Nombre del área = "+titleArea+"</b>");
-          $(simuladirGuardado).append("<br><b>Lineas del área:</b><br>");
-          canva.getObjects('line').forEach(function (obj) {
-            $(simuladirGuardado).append("coords: "+obj.getCoords()+"<br><br>");
-          });
-          $(simuladirGuardado).append("<b>Circulos del área:</b><br>");
-          canva.getObjects('circle').forEach(function (obj) {
-            $(simuladirGuardado).append("left: "+obj.left+"<br>");
-            $(simuladirGuardado).append("top: "+obj.top+"<br>");
-            $(simuladirGuardado).append("linea1:  "+obj.line1.getCoords()+" <br>");
-            $(simuladirGuardado).append("linea2: "+obj.line2.getCoords()+"<br><br>");
-          });
-          $(simuladirGuardado).append("<b>Cheniles Perros:</b><br>");
-          canva.getObjects('image').forEach(function (obj) {
-            if(obj.id=='chenilleDog'){
-              $(simuladirGuardado).append("type: "+obj.type+"<br>");
-              $(simuladirGuardado).append("left: "+obj.left+"<br>");
-              $(simuladirGuardado).append("top:  "+obj.top+" <br>");
-              $(simuladirGuardado).append("width: "+obj.width+"<br>");
-              $(simuladirGuardado).append("height: "+obj.height+"<br>");
-              $(simuladirGuardado).append("id: "+obj.id+"<br>");
-              $(simuladirGuardado).append("info: "+JSON.stringify(obj.info)+"<br><br>");
-            }           
-          });
-          $(simuladirGuardado).append("<b>Cheniles Gatos:</b><br>");
-          canva.getObjects('image').forEach(function (obj) {
-            if(obj.id=='chenilleCat'){
-              $(simuladirGuardado).append("type: "+obj.type+"<br>");
-              $(simuladirGuardado).append("left: "+obj.left+"<br>");
-              $(simuladirGuardado).append("top:  "+obj.top+" <br>");
-              $(simuladirGuardado).append("width: "+obj.width+"<br>");
-              $(simuladirGuardado).append("height: "+obj.height+"<br>");
-              $(simuladirGuardado).append("id: "+obj.id+"<br>");
-              $(simuladirGuardado).append("info: "+JSON.stringify(obj.info)+"<br><br>");
-            }           
-          });
-          $(simuladirGuardado).append("<b>Oficinas:</b><br>");
-          canva.getObjects('image').forEach(function (obj) {
-            if(obj.id=='home'){
-              $(simuladirGuardado).append("type: "+obj.type+"<br>");
-              $(simuladirGuardado).append("left: "+obj.left+"<br>");
-              $(simuladirGuardado).append("top:  "+obj.top+" <br>");
-              $(simuladirGuardado).append("width: "+obj.width+"<br>");
-              $(simuladirGuardado).append("height: "+obj.height+"<br>");
-              $(simuladirGuardado).append("id: "+obj.id+"<br>");
-              $(simuladirGuardado).append("info: "+JSON.stringify(obj.info)+"<br><br>");
-            }      
-          });
-          $(simuladirGuardado).append("<b>End Nombre del área = "+titleArea+"</b><br>");
-        });   
-      }
-   
-     
-    </script>
+    <div class="modal fade" id="modalFile" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <h4 class="modal-title" id="myModalLabel">Ficha</h4>
+          </div>
+          <div class="modal-body">
+            <form role="form" id="formFile">
+              <div class="form-group">
+                <label for="name">Nombre</label>
+                <input type="text"  name="id" style="display:none;">
+                <input type="text"    class="form-control" name="name" placeholder="Nombre">
+              </div>
+              <div class="form-group">
+                <label for="weight">Peso</label>
+                <input type="text" class="form-control" name="weight" placeholder="Peso">
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+            <button type="button" class="btn btn-primary" onclick="saveFile()">Guardar</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
   </body>
+
+  <script type="text/javascript" src='js/mainButtons/simulatorSave.js'></script>
+  <script type="text/javascript" src='js/mainButtons/addArea.js'></script>
+  <script type="text/javascript" src='js/mainButtons/deleteArea.js'></script>
 </html>
