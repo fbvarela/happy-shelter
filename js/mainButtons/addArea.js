@@ -4,7 +4,7 @@ var areaPanelTab        = $("#areaPanelTab");
 var areaPanelTabContent = $("#areaPanelTabContent");
 
 buttonAddArea.click(function() {
-  var id = getNewId();
+  var id = getNewIdArea();
   var nombreArea = getAreaNameByPrompt('Área '+getNewNumberName());
   if(!nombreArea)return
   areaPanel.show();
@@ -40,7 +40,7 @@ function getAreaNameByPrompt(defaultName){
     return false;
   }
   if(nombreArea.length==0){
-    nombreArea='Área '+getNewId();
+    nombreArea='Área '+getNewIdArea();
   }
   return nombreArea;
 } 
@@ -66,5 +66,7 @@ function editTittleTap(a) {
 }
 
 function areaTabClick(id){
+  canvas[getActiveTab()].discardActiveObject();
+  canvas[getActiveTab()].requestRenderAll(); 
   setActiveTab(id);
 }

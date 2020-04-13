@@ -5,7 +5,7 @@ var areaPanel              = $("#areaPanel");
 
 function filterItemsCanvas (canva,idToFilter){
   return _.filter(canva.getObjects('image'),function(obj){
-    return obj.id === idToFilter;
+    return obj.itemType === idToFilter;
   });
 }
 
@@ -21,7 +21,7 @@ function appendTitle (title, num){
 }
 
 function appendInfoItem (obj, paramsToAppend){
-  paramsToAppend.forEach(function (param) {
+  _.each(paramsToAppend, function (param) {
     var string;
     var moreParams = param.split(',');
     if(moreParams.length>1){
@@ -36,7 +36,7 @@ function appendInfoItem (obj, paramsToAppend){
 
 function appendItems(item, arrayData, params){
   appendTitle(item.title, arrayData.length);
-  arrayData.forEach(function (obj) {
+  _.each(arrayData, function (obj) {
     appendInfoItem(obj, params);
   });
 }
@@ -47,21 +47,37 @@ buttonSave.click(function() {
   }
   simulatorSavePanel.show();
   simulatorSavePanelBody.empty();
-  var infoKennel = ['type','left','top','width','height','id','info'];
-  var infoOffice = ['type','left','top','width','height','id'];
+  var infoKennel = ['type','left','top','width','height','scaleX','scaleY','itemType','id'];
+  var infoObject = ['type','left','top','width','height','scaleX','scaleY','itemType'];
   var infoCircle = ['left','top',"line1,x1","line1,y1","line1,x2","line1,y2","line2,x1","line2,y1","line2,x2","line2,y2"];
-  var infoLine   = ['x1','y1','x2','y2'];
-  canvas.forEach(function (canva,i) { 
+  var infoLine   = ['x1','y1','x2','y2','scaleX','scaleY'];
+  _.each(canvas, function (canva,i) { 
     var KENNEL_DOG = filterItemsCanvas(canva, ITEM.KENNEL_DOG.id);
     var KENNEL_CAT = filterItemsCanvas(canva, ITEM.KENNEL_CAT.id);
     var OFFICE     = filterItemsCanvas(canva, ITEM.OFFICE.id);
+    var TREE       = filterItemsCanvas(canva, ITEM.TREE.id);
+    var FAUCET     = filterItemsCanvas(canva, ITEM.FAUCET.id);
+    var ENTRY      = filterItemsCanvas(canva, ITEM.ENTRY.id);
     var titleArea  = getTabName(i);
     appendTitle('------------------ Init ------------------', titleArea);
     appendItems({title:'Lineas del área'},canva.getObjects('line'),infoLine);
     appendItems({title:'Circulos del área'},canva.getObjects('circle'),infoCircle);
     appendItems(ITEM.KENNEL_DOG,KENNEL_DOG,infoKennel);
     appendItems(ITEM.KENNEL_CAT,KENNEL_CAT,infoKennel);
-    appendItems(ITEM.OFFICE,OFFICE,infoOffice);
+    appendItems(ITEM.OFFICE,OFFICE,infoObject);
+    appendItems(ITEM.TREE,TREE,infoObject);  
+    appendItems(ITEM.FAUCET,FAUCET,infoObject);  
+    appendItems(ITEM.ENTRY,ENTRY,infoObject);
     appendTitle('------------------ End ------------------', titleArea);
   });   
+
+  appendTitle('Animales:', animals.length);
+  _.each(animals, function (animal){
+    simulatorSavePanelBody.append(JSON.stringify(animal)+"<br>")
+  })
+
+  appendTitle('Jaulas:', kennels.length);
+  _.each(kennels, function (kennel){
+    simulatorSavePanelBody.append(JSON.stringify(kennel)+"<br>")
+  })
 });

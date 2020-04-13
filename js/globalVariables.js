@@ -1,22 +1,30 @@
 const DEFAULT_SIDES = 4;
 var canvas          = [];
 var sides           = [];
-var newId           = 0;
 var newNumberName   = 1;
 var activeTab       = 0;
+var idArea          = 0;
+
 
 function addNew(){
   canvas.push(new fabric.Canvas('c_'+canvas.length, { selection: false}));
   sides.push(DEFAULT_SIDES);
-  newId++;
+  idArea++;
   newNumberName++;
 }
 
 function deleteLast(){
   canvas.pop();
   sides.pop();
-  newId--;
+  idArea--;
   newNumberName--;
+}
+
+function newIdAnimal(){
+  return idAnimal++;
+}
+function getIdAnimal(){
+  return idAnimal;
 }
 
 function setActiveTab(id){
@@ -27,8 +35,16 @@ function getActiveTab(){
   return activeTab;
 }
 
-function getNewId(){
-  return newId;
+function getNewIdArea(){
+  return idArea;
+}
+
+function getLastIdArea(){
+  return idArea-1;
+}
+
+function getActiveTabName(){
+  return $("a[href$='tab_"+getActiveTab()+"']").text().trim();
 }
 
 function getSelectorTabActive(selector){

@@ -3,15 +3,21 @@
     <title>REFUGIO ANIMAL</title>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js"></script>
+    <script type="text/javascript" src='js/libs/moment.js'></script>
     <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js'></script>
     <script type="text/javascript" src="https://unpkg.com/fabric@4.0.0-beta.8/dist/fabric.js"></script>
-    <script type="text/javascript" src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <script type="text/javascript" src="https://kit.fontawesome.com/a076d05399.js"></script>    
     <script type="text/javascript" src='js/globalVariables.js'></script>
+    <script type="text/javascript" src='js/entities/animals.js'></script>
+    <script type="text/javascript" src='js/entities/kennels.js'></script>
     <script type="text/javascript" src='js/enum/itemEnum.js'></script>
     <script type="text/javascript" src='js/areagenerator.js'></script>
     <script type="text/javascript" src='js/panelInfo.js'></script>
     <script type="text/javascript" src='js/controlPanel.js'></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <script type="text/javascript" src='js/form/utils.js'></script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"                                       rel="stylesheet" type='text/css'>
+    <link href='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/css/bootstrap-datetimepicker.min.css' rel='stylesheet' type='text/css'>
     <style>
       .glyphicon{
         cursor: pointer;
@@ -25,14 +31,18 @@
       .glyphicon_200 {
         font-size: 200%;
       }
+      .fa-fuente:before {
+        content: url("img/fuente.png");
+      }       
     </style>
   </head>
   <body>
     <div class="btn-group" style="margin:10px;">
-      <button type="button" id="addArea"     title="Añadir nuevo área"    class="btn btn-default btn-lg"><span class="glyphicon glyphicon-plus"></span> Área</button>
-      <button type="button" id="deleteArea"  title="Eliminar ultimo área" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-trash"></span> Área</button>
-      <button type="button" id="save"        title="Guardar"              class="btn btn-default btn-lg"><span class="glyphicon glyphicon-floppy-disk"></span> Guardar</button>
-      <span type="button" class="btn btn-default btn-lg" style="cursor:default;">DISEÑA LAS ÁREAS DE TU REFUGIO ANIMAL</span>
+      <button type="button" id="addArea"     title="Añadir nuevo área"         class="btn btn-default btn-lg"><span class="glyphicon glyphicon-plus"></span> Área</button>
+      <button type="button" id="deleteArea"  title="Eliminar ultimo área"      class="btn btn-default btn-lg"><span class="glyphicon glyphicon-trash"></span> Área</button>
+      <button type="button" id="save"        title="Guardar"                   class="btn btn-default btn-lg"><span class="glyphicon glyphicon-floppy-disk"></span> Guardar</button>
+      <span   type="button" class="btn btn-default btn-lg" style="cursor:default;" id="shelterName">DISEÑA LAS ÁREAS DE TU REFUGIO ANIMAL</span>
+      <button type="button" id="editShelter"  title="Editar nombre del refugio"  class="btn btn-default btn-lg"><span class="glyphicon glyphicon-pencil"></span>&nbsp;</button>
     </div>
 
     <div class="panel panel-default" style="margin:10px;display:none;" id="areaPanel">
@@ -76,33 +86,66 @@
                     <div class="col-md-12">&nbsp;</div>
                   </div>
                 </div>
-              </div>
-              <div class="row" style="text-align: center;">
+              </div>    
+              <div class="row" style="text-align: center;">   
                 <div class="col-md-12">
                   <div class="btn-group">
-                    <button type="button" onclick="addItem(new item(ITEM.KENNEL_DOG.id))" title="Añadir chenil de perros" class="btn btn-default btn-lg"><span class="fas fa-dog" style="font-size:36px"></span></button>
-                    <button type="button" onclick="addItem(new item(ITEM.KENNEL_CAT.id))" title="Añadir chenil de gatos"  class="btn btn-default btn-lg"><span class="fas fa-cat" style="font-size:36px"></span></button>
-                    <button type="button" onclick="addItem(new item(ITEM.OFFICE.id))"     title="Añadir oficina"          class="btn btn-default btn-lg"><span class="glyphicon_200 glyphicon glyphicon-home"></span></button>
-                    <button type="button" onclick="addItem(new item(ITEM.PUTIL.id))"     title="Añadir putil"          class="btn btn-default btn-lg"><span class="glyphicon_200 glyphicon glyphicon-home"></span></button>
-
+                    <button type="button" onclick="addKennelItem(new item(ITEM.KENNEL_DOG.id))" title="Añadir chenil de perros" class="btn btn-default btn-lg"><span class="fas fa-dog" style="font-size:36px"></span></button>
+                    <button type="button" onclick="addKennelItem(new item(ITEM.KENNEL_CAT.id))" title="Añadir chenil de gatos"  class="btn btn-default btn-lg"><span class="fas fa-cat" style="font-size:36px"></span></button>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">&nbsp;</div>
+              </div>
+              <div class="row" style="text-align: center;">   
+                <div class="col-md-12">
+                  <div class="btn-group">
+                    <button type="button" onclick="addItem(new item(ITEM.OFFICE.id))" title="Añadir oficina"   class="btn btn-default btn-lg"><span class="glyphicon_200 glyphicon glyphicon-home"></span></button>
+                    <button type="button" onclick="addItem(new item(ITEM.TREE.id))"   title="Añadir árbol"     class="btn btn-default btn-lg"><span class="fas fa-tree" style="font-size:36px"></span></button>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">&nbsp;</div>
+              </div>
+              <div class="row" style="text-align: center;">   
+                <div class="col-md-12">
+                  <div class="btn-group">
+                    <button type="button" onclick="addItem(new item(ITEM.ENTRY.id))"  title="Añadir entrada"   class="btn btn-default btn-lg"><span class="fas fa-door-open" style="font-size:36px"></span></button>
+                    <button type="button" onclick="addItem(new item(ITEM.FAUCET.id))" title="Añadir fuente"    class="btn btn-default btn-lg"><span class="fas fa-faucet" style="font-size:36px"></span></button>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div class="col-md-7">
-          <canvas width="700" height="400" style="border:1px solid #ccc"></canvas>
+        <div class="col-md-6">
+          <canvas width="600" height="400" style="border:1px solid #ccc"></canvas>
         </div>
-        <div class="col-md-2">
+        <div class="col-md-3">
           <div class="panel panel-default">
             <div class="panel-heading">Info</div>
             <div class="panel-body" id="info" style="display: none;">
               <div class="row">
+                <div class="col-md-5" style="text-align: right;">
+                  Chenil id:
+                </div>
+                <div class="col-md-7">
+                  <span id="chenilId"></span>
+                </div>
+              </div>    
+              <div class="row">
+                <div class="col-md-12">&nbsp;</div>
+              </div>        
+              <div class="row">
                 <div class="col-md-12" style="text-align: center;">
-                  <button type="button" onclick="addFile()" title="Añadir ficha" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-plus"></span> Ficha</button>
+                  <button type="button" onclick="addAnimalForm()" title="Añadir ficha" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-plus"></span> Ficha</button>
                 </div>
               </div>
+              <div class="row">
+                <div class="col-md-12">&nbsp;</div>
+              </div>   
               <div id="infoFiles"></div>
             </div>
             </div>
@@ -115,6 +158,38 @@
         <h3 class="panel-title">Simulador de guardado</h3>
       </div>
       <div class="panel-body" id="simulatorSavePanelBody" style=" word-wrap: break-word;"></div>
+    </div>    
+    
+    <div class="modal fade" id="modalChageChenil" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <h4 class="modal-title" id="myModalLabel">Cambio de chenil</h4>
+          </div>
+          <div class="modal-body">
+            <form role="form" id="formChangeChennil">
+              <input type="hidden"  name="idAnimal">
+              <div class="form-group">
+                <label>Especie:&nbsp;</label><span id="species"></span><br/>
+              </div>
+              <div class="form-group">
+                <label>Nombre:&nbsp;</label><span id="name"></span><br/>
+              </div>
+              <div class="form-group">
+                <label>Chenil actual:&nbsp;</label><span id="actualChenil"></span><br/>
+              </div>
+              <div class="form-group">
+                <span id="chenilDisponibles"></span>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+            <button type="button" class="btn btn-primary" id="saveChangeChenilBtn" onclick="saveChangeChenil()">Guardar</button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="modal fade" id="modalFile" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -129,12 +204,77 @@
               <div class="form-group">
                 <label for="name">Nombre</label>
                 <input type="text"  name="id" style="display:none;">
-                <input type="text"    class="form-control" name="name" placeholder="Nombre">
+                <input type="hidden"  name="idKennel">
+                <input type="hidden"  name="species">
+                <input type="text"  class="form-control" name="name" placeholder="Nombre"> 
+              </div>
+              <div class="form-group">
+                <label for="sex">Sexo</label><br/>
+                <div class="btn-group" data-toggle="buttons">
+                  <label class="btn btn-primary">
+                    <input type="radio" name="sex" id="sex" value="female">Hembra
+                  </label>
+                  <label class="btn btn-primary">
+                    <input type="radio" name="sex" id="sex" value="male">Macho
+                  </label>
+                </div>
               </div>
               <div class="form-group">
                 <label for="weight">Peso</label>
                 <input type="text" class="form-control" name="weight" placeholder="Peso">
               </div>
+              <div class="form-group">
+                <label for="race">Raza</label>
+                <input type="text" class="form-control" name="race" placeholder="Raza">
+              </div> 
+              <div class="form-group">
+                <label for="race">Edad</label>
+                <input type="text" class="form-control" name="age" placeholder="Edad">
+              </div>  
+              <div class="form-group">
+                <label for="race">Fecha de recogida</label>
+                <div class="input-group date" data-provide="datepicker" id="dpPickUpDate">
+                  <input type="text" class="form-control" name="pickUpDate">
+                  <div class="input-group-addon">
+                      <span class="glyphicon glyphicon-th"></span>
+                  </div>
+                </div> 
+              </div>
+              <div class="form-group">
+                <label for="size">Tamaño</label><br/>
+                <div class="btn-group" data-toggle="buttons">
+                  <label class="btn btn-primary">
+                    <input type="radio" name="size" id="size" value="toy">Toy
+                  </label>
+                  <label class="btn btn-primary">
+                    <input type="radio" name="size" id="size" value="pequeño">Pequeño
+                  </label>
+                  <label class="btn btn-primary">
+                    <input type="radio" name="size" id="size" value="mediano">Mediano
+                  </label>
+                  <label class="btn btn-primary">
+                    <input type="radio" name="size" id="size" value="grande">Grande
+                  </label>
+                  <label class="btn btn-primary">
+                    <input type="radio" name="size" id="size" value="gigante">Gigante
+                  </label>
+                </div>
+              </div>      
+              <div class="form-group">
+                <label for="sterilized">Esterilizado</label><br/>
+                <div class="btn-group" data-toggle="buttons">
+                  <label class="btn btn-primary">
+                    <input type="radio" name="sterilized" id="sterilized" value="no">No
+                  </label>
+                  <label class="btn btn-primary">
+                    <input type="radio" name="sterilized" id="sterilized" value="si">Si
+                  </label>
+                </div>
+              </div>  
+              <div class="form-group">
+                <label for="description">Descripción</label>
+                <textarea class="form-control"  name="description" id="description" rows="3"></textarea>
+              </div>  
             </form>
           </div>
           <div class="modal-footer">
@@ -145,9 +285,10 @@
       </div>
     </div>
 
-  </body>
+  </body>  
 
   <script type="text/javascript" src='js/mainButtons/simulatorSave.js'></script>
   <script type="text/javascript" src='js/mainButtons/addArea.js'></script>
   <script type="text/javascript" src='js/mainButtons/deleteArea.js'></script>
+  <script type="text/javascript" src='js/mainButtons/editShelterName.js'></script>
 </html>

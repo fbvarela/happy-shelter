@@ -48,7 +48,7 @@ function loadEventsCanvas(id){
           obj.line1 && obj.line1.set({'x2':obj.getPointByOrigin().x, 'y2': obj.getPointByOrigin().y});
           obj.line2 && obj.line2.set({'x1':obj.getPointByOrigin().x, 'y1': obj.getPointByOrigin().y});
       });    
-      getCanvas(id).renderAll();    
+      getCanvas(id).requestRenderAll();    
     },
     'mouse:over': function(e) {
 
@@ -57,21 +57,19 @@ function loadEventsCanvas(id){
 
     },        
     'selection:created': function(e) {
-      if(e.target && e.target.info){        
-        var info = e.target.info; 
-        showInfo(info);                 
+      if(e.target && e.target.id!=undefined){        
+        showInfo( e.target.id);                 
       }
     },
     'selection:updated': function(e) {
-      if(e.target && e.target.info){        
-        var info = e.target.info;  
-        showInfo(info);       
-      }
-    },
-    'before:selection:cleared': function(e) {
-      if(e.target && e.target.info){
+      if(e.target && e.target.id!=undefined){        
+        showInfo(e.target.id);       
+      }else{
         getSelectorTabActive('#info').hide();
       }
+    },
+    'before:selection:cleared': function() {
+        getSelectorTabActive('#info').hide();
     }
   });
 }
@@ -97,8 +95,8 @@ function makeCircle(left, top, line1, line2) {
 
 function makeLine(coords) {
   return new fabric.Line(coords, {
-    fill: 'red',
-    stroke: 'red',
+    fill: 'black',
+    stroke: 'black',
     strokeWidth: 1,
     selectable: false
   });
@@ -115,5 +113,5 @@ function executeRotate(id,angleOffset) {
       obj.angle += Number(angleOffset);
       obj.setCoords();
   });
-  getCanvas(id).renderAll();
+  getCanvas(id).requestRenderAll();
 }

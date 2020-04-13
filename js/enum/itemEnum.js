@@ -13,18 +13,28 @@ const ITEM = {
   },
   OFFICE: {
     id  : 'OFFICE',
-    img : 'img/casa2.png',
+    img : 'img/casa.png',
     title: 'Oficina'
   },
-  PUTIL: {
-    id  : 'PUTIL',
-    img : 'img/putil.jpeg',
-    title: 'Putil'
+  TREE: {
+    id  : 'TREE',
+    img : 'img/tree.png',
+    title: 'Árbol'
+  },
+  ENTRY: {
+    id  : 'ENTRY',
+    img : 'img/entry.png',
+    title: 'Entrada'
+  },
+  FAUCET: {
+    id  : 'FAUCET',
+    img : 'img/faucet.png',
+    title: 'Fuente'
   }
 }
 
 class item  {
-  constructor(item) {
+  constructor(item, areaId) {
     switch(item) {
       case ITEM.KENNEL_DOG.id:
         this.id  = ITEM.KENNEL_DOG.id;
@@ -32,32 +42,36 @@ class item  {
         this.title=ITEM.KENNEL_DOG.title;
         this.info = {
           species:ITEM.KENNEL_DOG.species,
-          files: new Array(0)
         }
-        break;
+      break;
       case ITEM.KENNEL_CAT.id:
         this.id  = ITEM.KENNEL_CAT.id;
         this.img = ITEM.KENNEL_CAT.img;
         this.title=ITEM.KENNEL_CAT.title;
         this.info = {
           species:ITEM.KENNEL_CAT.species,
-          files: new Array(0)
         }
-        break;
-      case ITEM.PUTIL.id:
-        this.id  = ITEM.PUTIL.id;
-        this.img = ITEM.PUTIL.img;
-        this.title=ITEM.PUTIL.title;
-        this.info = {
-          species:ITEM.PUTIL.species,
-          files: new Array(0)
-        }
-        break;
-        case ITEM.OFFICE.id:
-          this.id  = ITEM.OFFICE.id;
-          this.img = ITEM.OFFICE.img;
-          this.title=ITEM.OFFICE.title;
-          break;
+      break;
+      case ITEM.OFFICE.id:
+        this.id  = ITEM.OFFICE.id;
+        this.img = ITEM.OFFICE.img;
+        this.title=ITEM.OFFICE.title;
+      break;
+      case ITEM.TREE.id:
+        this.id  = ITEM.TREE.id;
+        this.img = ITEM.TREE.img;
+        this.title=ITEM.TREE.title;
+      break;
+      case ITEM.ENTRY.id:
+        this.id  = ITEM.ENTRY.id;
+        this.img = ITEM.ENTRY.img;
+        this.title=ITEM.ENTRY.title;
+      break;
+      case ITEM.FAUCET.id:
+        this.id  = ITEM.FAUCET.id;
+        this.img = ITEM.FAUCET.img;
+        this.title=ITEM.FAUCET.title;
+      break;
       default:
     }
   }

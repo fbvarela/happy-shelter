@@ -5,17 +5,22 @@ var areaPanelTab        = $("#areaPanelTab");
 var areaPanelTabContent = $("#areaPanelTabContent");
 
 buttonDeleteArea.click(function() {
-  var newId = getNewId();
-  if(newId==0){
+  var newIdArea = getNewIdArea();
+  if(newIdArea==0){
     return
   }
-  if(areaPanelTab.children().last().hasClass('active') && newId>0){
-    getTabClick(newId-2)
+  if(hasAnimalsInArea(getLastIdArea())){
+    alert("No se puede eliminar un área que tiene animales");
+    return
+  }
+  if(areaPanelTab.children().last().hasClass('active') && newIdArea>0){
+    getTabClick(newIdArea-2)
   }
   areaPanelTabContent.children().last().remove();     
-  areaPanelTab.children().last().remove();     
+  areaPanelTab.children().last().remove();  
+  deleleKennelsByAreaId(getLastIdArea());   
   deleteLast();
-  if(getNewId()===0){
+  if(getNewIdArea()===0){
     areaPanel.hide();
     simulatorSavePanel.hide();
   }

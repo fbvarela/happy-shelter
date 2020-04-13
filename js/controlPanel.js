@@ -29,20 +29,36 @@ function addLine() {
 }
 
 function addItem(item) {
-  var id = getActiveTab();
-  makeImage(id,item.img,item.id,item.info);
+  let canvasId = getActiveTab();
+  makeImage(canvasId,item.img,item.id);
 }
 
-function rotate(direction) {  
-  var id = getActiveTab();
-  var degrees  = getSelectorTabActive('#grados').val();
-  if(direction=='right'){
-    degrees = Math.abs(degrees)
-  }     
-  executeRotate(id,degrees);
+function addKennelItem(item) {
+  let canvasId = getActiveTab();
+  item.info.areaId = canvasId;
+  item.info.id=getIdKennel();
+  newIdKennel();
+  addKennel(item.info);
+  makeImage(canvasId,item.img,item.id,item.info.id);
 }
 
-function makeImage(canvasId,urlImg,idImg,info){
+function deleteObject() {
+  let canvas = getCanvas(getActiveTab());
+  let obj = canvas.getActiveObject(); 
+  if(obj.id!=undefined){
+    if(hasAnimalsInKennel(obj.id)){
+      alert("No se puede eliminar un chenil que tiene animales");
+      return
+    }
+    let del = confirm("Va a eliminar el objeto");
+    if(!del)return;
+    removeKennel(obj.id);
+  }  
+  canvas.remove(obj);
+  canvas.requestRenderAll(); 
+}
+
+function makeImage(canvasId,urlImg,idImg,id){  
   fabric.Object.prototype.controls.deleteControl = new fabric.Control({
     position: { x: 0.5, y: -0.5 },
     offsetY: 16,
@@ -57,11 +73,20 @@ function makeImage(canvasId,urlImg,idImg,info){
       top: 50 ,
       width:50,
       height:50,
-      id: idImg,
-      info: info
+      itemType: idImg,
+      id: id
       });
     getCanvas(canvasId).add(img1);
   });
+}
+
+function rotate(direction) {  
+  var id = getActiveTab();
+  var degrees  = getSelectorTabActive('#grados').val();
+  if(direction=='right'){
+    degrees = Math.abs(degrees)
+  }     
+  executeRotate(id,degrees);
 }
 
 function renderIcon(ctx, left, top, styleOverride, fabricObject) {
@@ -71,10 +96,4 @@ function renderIcon(ctx, left, top, styleOverride, fabricObject) {
   ctx.rotate(fabric.util.degreesToRadians(fabricObject.angle));
   ctx.drawImage(img, -size/2, -size/2, size, size);
   ctx.restore();
-}
-
-function deleteObject() {
-  let canvas = getCanvas(getActiveTab());
-  canvas.remove(canvas.getActiveObject());
-  canvas.requestRenderAll();
 }
