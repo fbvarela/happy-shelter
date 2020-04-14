@@ -35,7 +35,7 @@ function appendInfoItem (obj, paramsToAppend){
 }
 
 function appendItems(item, arrayData, params){
-  appendTitle(item.title, arrayData.length);
+  appendTitle(getTextLang(item.id).text, arrayData.length);
   _.each(arrayData, function (obj) {
     appendInfoItem(obj, params);
   });
@@ -60,10 +60,10 @@ buttonSave.click(function() {
     var ENTRY      = filterItemsCanvas(canva, ITEM.ENTRY.id);
     var titleArea  = getTabName(i);
     appendTitle('------------------ Init ------------------', titleArea);
-    appendItems({title:'Lineas del área'},canva.getObjects('line'),infoLine);
-    appendItems({title:'Circulos del área'},canva.getObjects('circle'),infoCircle);
+    appendItems({id:getTextLang('linesOfArea').text},canva.getObjects('line'),infoLine);
+    appendItems({id:getTextLang('circlesOfArea').text},canva.getObjects('circle'),infoCircle);
     appendItems(ITEM.KENNEL_DOG,KENNEL_DOG,infoKennel);
-    appendItems(ITEM.KENNEL_CAT,KENNEL_CAT,infoKennel);
+    appendItems(ITEM.KENNEL_CAT,KENNEL_CAT,infoKennel);  
     appendItems(ITEM.OFFICE,OFFICE,infoObject);
     appendItems(ITEM.TREE,TREE,infoObject);  
     appendItems(ITEM.FAUCET,FAUCET,infoObject);  
@@ -71,12 +71,12 @@ buttonSave.click(function() {
     appendTitle('------------------ End ------------------', titleArea);
   });   
 
-  appendTitle('Animales:', animals.length);
+  appendTitle(getTextLang('animals').text, animals.length);
   _.each(animals, function (animal){
     simulatorSavePanelBody.append(JSON.stringify(animal)+"<br>")
   })
 
-  appendTitle('Jaulas:', kennels.length);
+  appendTitle(getTextLang('kennels').text, kennels.length);
   _.each(kennels, function (kennel){
     simulatorSavePanelBody.append(JSON.stringify(kennel)+"<br>")
   })

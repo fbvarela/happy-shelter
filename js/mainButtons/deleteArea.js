@@ -10,7 +10,7 @@ buttonDeleteArea.click(function() {
     return
   }
   if(hasAnimalsInArea(getLastIdArea())){
-    alert("No se puede eliminar un área que tiene animales");
+    alert(getTextLang('errorRemoveAreaHasAnimals').text);
     return
   }
   if(areaPanelTab.children().last().hasClass('active') && newIdArea>0){

@@ -23,7 +23,7 @@ function showModal(){
   $('#modalFile').modal('show');  
 }
 
-function addAnimalForm(){
+function addRecord(){
   showModal();
   $('#dpPickUpDate').datetimepicker();
   updateRadios(formAddAnimal);
@@ -47,21 +47,27 @@ function saveFile(){
     infoFile.append(createSpanInfo(animal));
     infoFile.append("<br/>");  
   }
+  $('#modalFile').modal('hide');
 };
 
 function createSpanInfo(animal){
-  var title =" Ficha de ".concat(animal.name);
   var span = document.createElement('span');
+  var span2 = document.createElement('span');
+  var span3 = document.createElement('span');
+  span2.setAttribute("id", "recordOf");
+  span2.append(document.createTextNode(getTextLang('recordOf').text));
+  span3.append(animal.name.toUpperCase());
   span.setAttribute("id", animal.id);
-  span.append(createSpanEditInfo(animal,'glyphicon-pencil', 'editInfo','Editar ficha'));
-  span.append(createSpanEditInfo(animal,'glyphicon-home', 'changeChenil','Cambiar chenil'));
-  span.append(document.createTextNode(title));
+  span.append(createSpanEditInfo(animal,'glyphicon-pencil', 'editInfo',getTextLang('edifInfoIcon').title,'edifInfoIcon'));
+  span.append(createSpanEditInfo(animal,'glyphicon-home', 'changeChenil',getTextLang('changeKennelIcon').title, 'changeKennelIcon'));
+  span.append(span2);
+  span.append(span3);
   return span;
 }
 
-function createSpanEditInfo(animal, icon, functionClick, titleInit){
-  var title =titleInit.concat(" de ").concat(animal.name);
+function createSpanEditInfo(animal, icon, functionClick, title, id){
   var span = document.createElement('span');
+  span.setAttribute("id", id);
   span.setAttribute("class", "glyphicon "+icon);
   span.setAttribute("title",title);
   span.setAttribute("onclick", functionClick+"("+animal.id+")");
@@ -72,29 +78,34 @@ function changeChenil(id){
   let animal=getAnimalById(id);
   $('#modalChageChenil').modal('show');
   $(formChangeKennelJQ+" input[name='idAnimal']").val(id);
-  $(formChangeKennelJQ+" #species").text(animal.species);
+  $(formChangeKennelJQ+" #species").text(getTextLang(animal.species).text);
   $(formChangeKennelJQ+" #name").text(animal.name);
   $(formChangeKennelJQ+" #actualChenil").text(animal.idKennel);
   var availableKennels = getAvailableKennelsWithAnimalsForOneAnimal(animal.idKennel,animal.species);
   $(formChangeKennelJQ+" #chenilDisponibles").empty();
   if(availableKennels.length===0){
-    $(formChangeKennelJQ+" #chenilDisponibles").append("<b style='color:red'>¡¡No tienes cheniles disponibles!!</b>");
+    $(formChangeKennelJQ+" #chenilDisponibles").append(getTextLang('errorNotHaveKennelsAvailable').text);
   }else{
-    $(formChangeKennelJQ+" #chenilDisponibles").append("<b>Cheniles disponibles:</b></br>");
+    $(formChangeKennelJQ+" #chenilDisponibles").append(getTextLang('kennelsAvailable').text);
     _.each(availableKennels,function(availableKennel){     
-      $(formChangeKennelJQ+" #chenilDisponibles").append("Área: "+getTabName(availableKennel.areaId));
+      $(formChangeKennelJQ+" #chenilDisponibles").append(
+        getTextLang('area').text.concat(": ")
+        .concat(getTabName(availableKennel.areaId))
+      );
       $(formChangeKennelJQ+" #chenilDisponibles").append("<br>");
-      $(formChangeKennelJQ+" #chenilDisponibles").append("Chenil id: "+
+      $(formChangeKennelJQ+" #chenilDisponibles").append(getTextLang('idKennel').text+
       availableKennel.id+'&nbsp;&nbsp;&nbsp;<input type="radio" name="newChenil"'+ 
-      'onclick="enanbleBtn(true)" id="newChenil" value='+availableKennel.id+'>');
-      $(formChangeKennelJQ+" #chenilDisponibles").append("<br>");
-      $(formChangeKennelJQ+" #chenilDisponibles").append("Número actual de "+animal.species+": "+availableKennel.totalAnimals);
-      $(formChangeKennelJQ+" #chenilDisponibles").append("<br>");
-      $(formChangeKennelJQ+" #chenilDisponibles").append("<br>");
+      'onclick="enanbleBtn(true)" id="newChenil" value='+availableKennel.id+'><br>');
+      $(formChangeKennelJQ+" #chenilDisponibles").append(
+        getTextLang('actualNumberOf').text
+        .concat(getTextLang(animal.species).text)
+        .concat(": ")
+        .concat(availableKennel.totalAnimals)
+      );
+      $(formChangeKennelJQ+" #chenilDisponibles").append("<br><br>");
     });
   }
-  enanbleBtn(false)
-  
+  enanbleBtn(false);
 }
 
 function enanbleBtn(enable){

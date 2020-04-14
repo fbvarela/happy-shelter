@@ -5,7 +5,7 @@ var areaPanelTabContent = $("#areaPanelTabContent");
 
 buttonAddArea.click(function() {
   var id = getNewIdArea();
-  var nombreArea = getAreaNameByPrompt('Área '+getNewNumberName());
+  var nombreArea = getAreaNameByPrompt(getTextLang('area').text.concat(" ").concat(getNewNumberName()));
   if(!nombreArea)return
   areaPanel.show();
   var li = document.createElement('li');
@@ -35,12 +35,12 @@ buttonAddArea.click(function() {
 });    
 
 function getAreaNameByPrompt(defaultName){
-  var nombreArea = prompt("¿Nombre del Área?",defaultName);
+  var nombreArea = prompt(getTextLang('nameOfTheArea').text, defaultName);
   if(nombreArea==null){
     return false;
   }
   if(nombreArea.length==0){
-    nombreArea='Área '+getNewIdArea();
+    nombreArea=getTextLang('area').text.concat(" ").concat(getNewNumberName());
   }
   return nombreArea;
 } 

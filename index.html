@@ -38,11 +38,32 @@
   </head>
   <body>
     <div class="btn-group" style="margin:10px;">
-      <button type="button" id="addArea"     title="Añadir nuevo área"         class="btn btn-default btn-lg"><span class="glyphicon glyphicon-plus"></span> Área</button>
-      <button type="button" id="deleteArea"  title="Eliminar ultimo área"      class="btn btn-default btn-lg"><span class="glyphicon glyphicon-trash"></span> Área</button>
-      <button type="button" id="save"        title="Guardar"                   class="btn btn-default btn-lg"><span class="glyphicon glyphicon-floppy-disk"></span> Guardar</button>
+      <button type="button" id="addArea" class="btn btn-default btn-lg">
+        <span class="glyphicon glyphicon-plus"></span> 
+        <span id="addAreaLang"></span>
+      </button>
+      <button type="button" id="deleteArea" class="btn btn-default btn-lg">
+        <span class="glyphicon glyphicon-trash"></span> 
+        <span id="deleteAreaLang"></span>
+      </button>
+      <button type="button" id="save" class="btn btn-default btn-lg">
+        <span class="glyphicon glyphicon-floppy-disk"></span>
+        <span id="saveLang1"></span>
+      </button>
       <span   type="button" class="btn btn-default btn-lg" style="cursor:default;" id="shelterName">DISEÑA LAS ÁREAS DE TU REFUGIO ANIMAL</span>
-      <button type="button" id="editShelter"  title="Editar nombre del refugio"  class="btn btn-default btn-lg"><span class="glyphicon glyphicon-pencil"></span>&nbsp;</button>
+      <button type="button" id="editShelter" class="btn btn-default btn-lg">
+        <span class="glyphicon glyphicon-pencil"></span>&nbsp;
+      </button>
+      <div class="btn-group" data-toggle="buttons">
+        <label class="btn btn-primary btn-lg active"  onclick="changeLanguage('ES')">
+          <input type="radio" name="lang" id="lang">
+          <span>ES</span>
+        </label>
+        <label class="btn btn-primary btn-lg" onclick="changeLanguage('EN')">
+          <input type="radio" name="lang" id="lang">
+          <span>EN</span>
+        </label>
+      </div>
     </div>
 
     <div class="panel panel-default" style="margin:10px;display:none;" id="areaPanel">
@@ -56,17 +77,26 @@
       <div class="row">
         <div class="col-md-3">
           <div class="panel panel-default">
-            <div class="panel-heading">Panel de control</div>
+            <div class="panel-heading"><span id="controlPanelLang"></span></div>
             <div class="panel-body">
               <div class="panel panel-default">
-                <div class="panel-heading">Área</div>
+                <div class="panel-heading"><span id="controlPanelAreaLang"></div>
                 <div class="panel-body">
                   <div class="row" style="text-align: center;">
                     <div class="col-md-12">
                       <div class="btn-group">
-                        <button type="button" class="btn btn-default" style="height:34px" onclick="removeLine()"  title="Eliminar un punto del área"><span class="glyphicon glyphicon-minus"></span></button>
-                        <span   type="button" class="btn btn-default" style="cursor:default;">Num. puntos: <span id="numberPointsArea"></span></span>
-                        <button type="button" class="btn btn-default" style="height:34px"  onclick="addLine()" title="Añadir un punto al área"><span class="glyphicon glyphicon-plus"></span></button>
+                        <button type="button" id="removeLine" class="btn btn-default" style="height:34px" 
+                          onclick="removeLine()">
+                          <span class="glyphicon glyphicon-minus"></span>
+                        </button>
+                        <span type="button" class="btn btn-default" style="cursor:default;">
+                          <span id="numberPointsAreaLang"></span>
+                          <span id="numberPointsArea"></span>
+                        </span>
+                        <button type="button" id="addLine" class="btn btn-default" style="height:34px"  
+                          onclick="addLine()">
+                          <span class="glyphicon glyphicon-plus"></span>
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -76,9 +106,13 @@
                   <div class="row" style="text-align: center;">
                     <div class="col-md-12">
                       <div class="btn-group">
-                        <button type="button" class="btn btn-default" style="height:34px"  onclick="rotate('left')"  title="Rotar todo hacia la izquierda"><span class="glyphicon glyphicon-chevron-left"></span></button>
+                        <button type="button" id="rotateLeft" class="btn btn-default" style="height:34px"  onclick="rotate('left')">
+                          <span class="glyphicon glyphicon-chevron-left"></span>
+                        </button>
                         <select id="grados"   class="btn btn-default" style="height:34px"><option value="-20">20°</option><option value="-45">45°</option><option value="-60">60°</option><option value="-90">90°</option><option value="-180">180°</option></select>
-                        <button type="button" class="btn btn-default" style="height:34px"  onclick="rotate('right')" title="Rotar todo hacia la derecha"><span class="glyphicon glyphicon-chevron-right"></span></button>
+                        <button type="button"  id="rotateRight" class="btn btn-default" style="height:34px"  onclick="rotate('right')">
+                          <span class="glyphicon glyphicon-chevron-right"></span>
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -90,8 +124,12 @@
               <div class="row" style="text-align: center;">   
                 <div class="col-md-12">
                   <div class="btn-group">
-                    <button type="button" onclick="addKennelItem(new item(ITEM.KENNEL_DOG.id))" title="Añadir chenil de perros" class="btn btn-default btn-lg"><span class="fas fa-dog" style="font-size:36px"></span></button>
-                    <button type="button" onclick="addKennelItem(new item(ITEM.KENNEL_CAT.id))" title="Añadir chenil de gatos"  class="btn btn-default btn-lg"><span class="fas fa-cat" style="font-size:36px"></span></button>
+                    <button type="button" id="addKennelDog" onclick="addKennelItem(new item(ITEM.KENNEL_DOG.id))" class="btn btn-default btn-lg">
+                      <span class="fas fa-dog" style="font-size:36px"></span>
+                    </button>
+                    <button type="button" id="addKennelCat" onclick="addKennelItem(new item(ITEM.KENNEL_CAT.id))" class="btn btn-default btn-lg">
+                      <span class="fas fa-cat" style="font-size:36px"></span>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -101,8 +139,12 @@
               <div class="row" style="text-align: center;">   
                 <div class="col-md-12">
                   <div class="btn-group">
-                    <button type="button" onclick="addItem(new item(ITEM.OFFICE.id))" title="Añadir oficina"   class="btn btn-default btn-lg"><span class="glyphicon_200 glyphicon glyphicon-home"></span></button>
-                    <button type="button" onclick="addItem(new item(ITEM.TREE.id))"   title="Añadir árbol"     class="btn btn-default btn-lg"><span class="fas fa-tree" style="font-size:36px"></span></button>
+                    <button type="button" id="addItemOffice" onclick="addItem(new item(ITEM.OFFICE.id))" class="btn btn-default btn-lg">
+                      <span class="glyphicon_200 glyphicon glyphicon-home"></span>
+                    </button>
+                    <button type="button" id="addItemTree" onclick="addItem(new item(ITEM.TREE.id))" class="btn btn-default btn-lg">
+                      <span class="fas fa-tree" style="font-size:36px"></span>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -112,8 +154,12 @@
               <div class="row" style="text-align: center;">   
                 <div class="col-md-12">
                   <div class="btn-group">
-                    <button type="button" onclick="addItem(new item(ITEM.ENTRY.id))"  title="Añadir entrada"   class="btn btn-default btn-lg"><span class="fas fa-door-open" style="font-size:36px"></span></button>
-                    <button type="button" onclick="addItem(new item(ITEM.FAUCET.id))" title="Añadir fuente"    class="btn btn-default btn-lg"><span class="fas fa-faucet" style="font-size:36px"></span></button>
+                    <button type="button" id="addItemEntry" onclick="addItem(new item(ITEM.ENTRY.id))" class="btn btn-default btn-lg">
+                      <span class="fas fa-door-open" style="font-size:36px"></span>
+                    </button>
+                    <button type="button" id="addItemFaucet" onclick="addItem(new item(ITEM.FAUCET.id))" class="btn btn-default btn-lg">
+                      <span class="fas fa-faucet" style="font-size:36px"></span>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -125,11 +171,11 @@
         </div>
         <div class="col-md-3">
           <div class="panel panel-default">
-            <div class="panel-heading">Info</div>
+            <div class="panel-heading"><span id="controlPanelInfoLang"></span></div>
             <div class="panel-body" id="info" style="display: none;">
               <div class="row">
                 <div class="col-md-5" style="text-align: right;">
-                  Chenil id:
+                  <span id="kennelIdLang"></span>
                 </div>
                 <div class="col-md-7">
                   <span id="chenilId"></span>
@@ -140,7 +186,10 @@
               </div>        
               <div class="row">
                 <div class="col-md-12" style="text-align: center;">
-                  <button type="button" onclick="addAnimalForm()" title="Añadir ficha" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-plus"></span> Ficha</button>
+                  <button type="button" id="addRecord" onclick="addRecord()" class="btn btn-default btn-lg">
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <span id="recordLang"></span>
+                  </button>
                 </div>
               </div>
               <div class="row">
@@ -155,7 +204,7 @@
 
     <div class="panel panel-default" style="margin:10px;display:none;" id="simulatorSavePanel">
       <div class="panel-heading">
-        <h3 class="panel-title">Simulador de guardado</h3>
+        <h3 class="panel-title"><span id="controlPanelSaveSimulatorLang"></span></h3>
       </div>
       <div class="panel-body" id="simulatorSavePanelBody" style=" word-wrap: break-word;"></div>
     </div>    
@@ -164,20 +213,22 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-            <h4 class="modal-title" id="myModalLabel">Cambio de chenil</h4>
+            <button type="button" class="close" data-dismiss="modal">
+              <span aria-hidden="true">&times;</span><span class="sr-only"><span id="closeLang1"></span></span>
+            </button>
+            <h4 class="modal-title" id="myModalLabel"><span id="modalChageChenilTitleLang"></span></h4>
           </div>
           <div class="modal-body">
             <form role="form" id="formChangeChennil">
               <input type="hidden"  name="idAnimal">
               <div class="form-group">
-                <label>Especie:&nbsp;</label><span id="species"></span><br/>
+                <label><span id="speciesLang"></span></label> <span id="species"></span><br/>
               </div>
               <div class="form-group">
-                <label>Nombre:&nbsp;</label><span id="name"></span><br/>
+                <label><span id="nameLang"></span></label> <span id="name"></span><br/>
               </div>
               <div class="form-group">
-                <label>Chenil actual:&nbsp;</label><span id="actualChenil"></span><br/>
+                <label><span id="currentKennel"></span></label> <span id="actualChenil"></span><br/>
               </div>
               <div class="form-group">
                 <span id="chenilDisponibles"></span>
@@ -185,8 +236,8 @@
             </form>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-            <button type="button" class="btn btn-primary" id="saveChangeChenilBtn" onclick="saveChangeChenil()">Guardar</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal"><span id="closeLang2"></span></button>
+            <button type="button" class="btn btn-primary" id="saveChangeChenilBtn" onclick="saveChangeChenil()"><span id="saveLang2"></span></button>
           </div>
         </div>
       </div>
@@ -196,90 +247,101 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-            <h4 class="modal-title" id="myModalLabel">Ficha</h4>
+            <button type="button" class="close" data-dismiss="modal">
+              <span aria-hidden="true">&times;</span><span class="sr-only"><span id="closeLang3"></span></span>
+            </button>
+            <h4 class="modal-title" id="myModalLabel"><span id="modalRecordTitleLang"></span></h4>
           </div>
           <div class="modal-body">
             <form role="form" id="formFile">
               <div class="form-group">
-                <label for="name">Nombre</label>
+                <label for="name"><span id="nameLang1"></span></label>
                 <input type="text"  name="id" style="display:none;">
                 <input type="hidden"  name="idKennel">
                 <input type="hidden"  name="species">
-                <input type="text"  class="form-control" name="name" placeholder="Nombre"> 
+                <input type="text"  class="form-control" id="fileName" name="name"> 
               </div>
               <div class="form-group">
-                <label for="sex">Sexo</label><br/>
+                <label for="sex"><span id="sexLang"></span></label><br/>
                 <div class="btn-group" data-toggle="buttons">
                   <label class="btn btn-primary">
-                    <input type="radio" name="sex" id="sex" value="female">Hembra
+                    <input type="radio" name="sex" id="sex" value="female">
+                    <span id="femaleLang"></span>
                   </label>
                   <label class="btn btn-primary">
-                    <input type="radio" name="sex" id="sex" value="male">Macho
+                    <input type="radio" name="sex" id="sex" value="male">
+                    <span id="maleLang"></span>
                   </label>
                 </div>
               </div>
               <div class="form-group">
-                <label for="weight">Peso</label>
-                <input type="text" class="form-control" name="weight" placeholder="Peso">
+                <label for="weight"><span id="weightLang"></span></label>
+                <input type="text" class="form-control" id="fileWeight" name="weight">
               </div>
               <div class="form-group">
-                <label for="race">Raza</label>
-                <input type="text" class="form-control" name="race" placeholder="Raza">
+                <label for="race"><span id="raceLang"></span></label>
+                <input type="text" class="form-control" id="fileRace" name="race">
               </div> 
               <div class="form-group">
-                <label for="race">Edad</label>
-                <input type="text" class="form-control" name="age" placeholder="Edad">
+                <label for="race"><span id="ageLang"></span></label>
+                <input type="text" class="form-control" id="fileAge" name="age">
               </div>  
               <div class="form-group">
-                <label for="race">Fecha de recogida</label>
+                <label for="race"><span id="pickUpDateLang"></span></label>
                 <div class="input-group date" data-provide="datepicker" id="dpPickUpDate">
-                  <input type="text" class="form-control" name="pickUpDate">
+                  <input type="text" class="form-control" id="filePickUpDate" name="pickUpDate">
                   <div class="input-group-addon">
                       <span class="glyphicon glyphicon-th"></span>
                   </div>
                 </div> 
               </div>
               <div class="form-group">
-                <label for="size">Tamaño</label><br/>
+                <label for="size"><span id="sizeLang"></span></label><br/>
                 <div class="btn-group" data-toggle="buttons">
                   <label class="btn btn-primary">
-                    <input type="radio" name="size" id="size" value="toy">Toy
+                    <input type="radio" name="size" id="size" value="toy">
+                    <span id="toyLang"></span>
                   </label>
                   <label class="btn btn-primary">
-                    <input type="radio" name="size" id="size" value="pequeño">Pequeño
+                    <input type="radio" name="size" id="size" value="little">
+                    <span id="littleLang"></span>
                   </label>
                   <label class="btn btn-primary">
-                    <input type="radio" name="size" id="size" value="mediano">Mediano
+                    <input type="radio" name="size" id="size" value="medium">
+                    <span id="mediumLang"></span>
                   </label>
                   <label class="btn btn-primary">
-                    <input type="radio" name="size" id="size" value="grande">Grande
+                    <input type="radio" name="size" id="size" value="big">
+                    <span id="bigLang"></span>
                   </label>
                   <label class="btn btn-primary">
-                    <input type="radio" name="size" id="size" value="gigante">Gigante
+                    <input type="radio" name="size" id="size" value="gigante">
+                    <span id="giantLang"></span>
                   </label>
                 </div>
               </div>      
               <div class="form-group">
-                <label for="sterilized">Esterilizado</label><br/>
+                <label for="sterilized"><span id="sterilizedLang"></span></label><br/>
                 <div class="btn-group" data-toggle="buttons">
                   <label class="btn btn-primary">
-                    <input type="radio" name="sterilized" id="sterilized" value="no">No
+                    <input type="radio" name="sterilized" id="sterilized" value="no">
+                    <span id="noLang"></span>
                   </label>
                   <label class="btn btn-primary">
-                    <input type="radio" name="sterilized" id="sterilized" value="si">Si
+                    <input type="radio" name="sterilized" id="sterilized" value="yes">
+                    <span id="yesLang"></span>
                   </label>
                 </div>
               </div>  
               <div class="form-group">
-                <label for="description">Descripción</label>
+                <label for="description"><span id="descriptionLang"></span></label>
                 <textarea class="form-control"  name="description" id="description" rows="3"></textarea>
               </div>  
             </form>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-            <button type="button" class="btn btn-primary" onclick="saveFile()">Guardar</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal"><span id="closeLang4"></span></button>
+            <button type="button" class="btn btn-primary" onclick="saveFile()"><span id="saveLang3"></span></button>
           </div>
         </div>
       </div>
@@ -291,4 +353,8 @@
   <script type="text/javascript" src='js/mainButtons/addArea.js'></script>
   <script type="text/javascript" src='js/mainButtons/deleteArea.js'></script>
   <script type="text/javascript" src='js/mainButtons/editShelterName.js'></script>
+  <script type="text/javascript" src='js/mainButtons/lang.js'></script>
+  <script type="text/javascript" src='js/lang/en.js'></script>
+  <script type="text/javascript" src='js/lang/es.js'></script>
+  <script>changeLanguage('ES');</script>
 </html>

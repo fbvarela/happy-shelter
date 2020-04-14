@@ -47,11 +47,9 @@ function deleteObject() {
   let obj = canvas.getActiveObject(); 
   if(obj.id!=undefined){
     if(hasAnimalsInKennel(obj.id)){
-      alert("No se puede eliminar un chenil que tiene animales");
+      alert(getTextLang('errorRemoveKennelHasAnimals').text);
       return
     }
-    let del = confirm("Va a eliminar el objeto");
-    if(!del)return;
     removeKennel(obj.id);
   }  
   canvas.remove(obj);
