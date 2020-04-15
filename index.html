@@ -1,0 +1,139 @@
+<html>
+
+  <head>
+    <title>PERRERA</title>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <script type="text/javascript" src="https://unpkg.com/fabric@4.0.0-beta.8/dist/fabric.js"></script>
+  </head>
+
+  <body>
+    
+    <pre data-lang="html">
+          
+      <div class="input-group">
+        <button onclick="AddArea()">Añadir nuevo area</button>
+        <button onclick="SaveMap()">Guardar mapas</button>
+      </div>
+      <div id="mapas">
+        <div class="input-group" id="div_0">
+          <h1>Area Principal</h1>
+          <button onclick="AddLine(0)">Añadir linea</button>
+          <button onclick="RemoveLine(0)">Quitar linea</button>
+          <canvas id="c_0" width="450" height="350" style="border:1px solid #ccc"></canvas>
+        </div>
+      </div>  
+    </pre>
+  
+    <script>
+      var canvas = [new fabric.Canvas('c_0', { selection: false })];
+      var num_canvas = 1
+      var lados  = [3];
+      var cx     = 75;
+      var cy     = 100;
+      var r      = 70;
+      function init(id) {
+          fabric.Object.prototype.originX = fabric.Object.prototype.originY = 'center';
+          var a = 360/lados[id];
+          var lines =new Array();
+          for(var i=0;i < lados[id];i++){
+              var aRad=  (Math.PI / 180) * (a*(i+1));
+              Xp = cx+r * Math.cos(aRad);
+              Yp = cy+r * Math.sin(aRad);
+              lines[i]={x2:Xp, y2:Yp};
+              if(i != 0){
+                lines[i] = makeLine([lines[i-1].x2, lines[i-1].y2, Xp, Yp]);
+                canvas[id].add(lines[i]);
+                if(i != 1){
+                  canvas[id].add(makeCircle(lines[i].get('x1'), lines[i].get('y1'), lines[i-1], lines[i]));
+                }               
+                if(i == lados[id]-1){
+                  lines[0] = makeLine([Xp, Yp, lines[0].x2, lines[0].y2]);
+                  canvas[id].add(
+                    lines[0],
+                    makeCircle(lines[0].get('x1'), lines[0].get('y1'), lines[lines.length-1], lines[0]),
+                    makeCircle(lines[1].get('x1'), lines[1].get('y1'), lines[0], lines[1])
+                  );         
+                }
+              }              
+          }
+
+          canvas[id].on('object:moving', function(e) {
+            var p = e.target;
+            p.line1 && p.line1.set({ 'x2': p.left, 'y2': p.top });
+            p.line2 && p.line2.set({ 'x1': p.left, 'y1': p.top });
+            canvas[id].renderAll();          
+          });
+
+      }
+
+      function makeCircle(left, top, line1, line2) {
+        var c = new fabric.Circle({
+          left: left,
+          top: top,
+          strokeWidth: 1,
+          radius: 3,
+          fill: '#fff',
+          stroke: '#666'
+        });
+        c.hasControls = c.hasBorders = false;
+        c.line1 = line1;
+        c.line2 = line2;
+        return c;
+      }
+
+      function makeLine(coords) {
+        return new fabric.Line(coords, {
+          fill: 'red',
+          stroke: 'red',
+          strokeWidth: 1,
+          selectable: false,
+          evented: false
+        });
+      }
+
+      init(0);
+
+      function RemoveLine(id) {
+        if(lados[id]!=3){
+          canvas[id].clear();
+          var newLados= lados[id]-1;
+          lados[id]=newLados;
+          init(id);  
+        }            
+      }
+      function AddLine(id) {
+        canvas[id].clear();
+        var newLados= lados[id]+1;
+        lados[id]=newLados;
+        init(id);      
+      }
+      function AddArea() {
+        var nombreArea=prompt('¿Nombre del nuevo AREA?');
+        var capa = document.getElementById("mapas");
+        var div = document.createElement('div');
+        div.setAttribute("id", "div_"+lados.length);
+        div.setAttribute("class", "input-group");
+        capa.appendChild(div);
+        var newDiv = document.getElementById("div_"+lados.length);
+        newDiv.innerHTML += '<h1>'+nombreArea+'</h1><button onclick="AddLine('+lados.length+
+        ')">Añadir linea</button><button onclick="RemoveLine('+lados.length+
+        ')">Quitar linea</button><canvas id="c_'+lados.length+
+        '" width="250" height="250" style="border:1px solid #ccc"></canvas>';
+        
+        canvas[lados.length]=new fabric.Canvas('c_'+lados.length, { selection: false });
+        lados[lados.length]=3;
+        init(lados.length-1);
+      }
+      function SaveMap() {
+        for(var i=0;i < canvas._objects.length;i++){
+          if(canvas._objects[i].x1){
+            console.log("linea1 x1="+canvas._objects[i].x1+" y1="+canvas._objects[i].y1);
+          }
+         
+        } 
+      }
+    </script>
+
+  </body>
+</html>
