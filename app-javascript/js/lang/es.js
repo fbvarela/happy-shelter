@@ -1,273 +1,276 @@
-var LANGS_LOAD_EN = 
+var LANGS_LOAD_ES = 
   {
       'addAreaLang' : {
-        text  : 'Area'
+        text  : 'Área'
       },
       'addArea' : {
-        title : ' Add new area'
+        title : 'Añadir nuevo área'
       },
       'save' : {
         text  : 'Area'
       },
       'deleteAreaLang' : {
-        text  : 'Area'
+        text  : 'Área'
       },
       'deleteArea' : {
-        title : 'Add last area'
+        title : 'Eliminar último área'
       },
       'saveLang1' : {
-        text  : 'Save'
+        text  : 'Guardar'
       },
       'saveLang2' : {
-        text  : 'Save'
+        text  : 'Guardar'
       },
       'saveLang3' : {
-        text  : 'Save'
+        text  : 'Guardar'
       },
       'save' : {
-        title : 'Save'
+        title : 'Guardar'
       },
       'editShelter' : {
-        title : 'Edit shelter name'
+        title : 'Editar nombre del refugio'
       },
       'controlPanelLang' : {
-        text : 'Control Panel'
+        text : 'Panel de control'
       },
       'controlPanelAreaLang' : {
-        text : 'Area'
+        text : 'Área'
       },
       'removeLine' : {
-        title : 'Remove a point from the area'
+        title : 'Eliminar un punto del área'
       },
       'numberPointsAreaLang' : {
-        text : 'Num of points:'
+        text : 'Num. puntos:'
       },
       'addLine' : {
-        title : 'Add a point to the area'
+        title : 'Añadir un punto al área'
       },
       'rotateLeft' : {
-        title : 'Rotate everything to the left'
+        title : 'Rotar todo hacia la izquierda'
       },
       'rotateRight' : {
-        title : 'Rotate everything to the right'
+        title : 'Rotar todo hacia la derecha'
       },
       'addKennelDog' : {
-        title : 'Add dog kennel'
+        title : 'Añadir chenil de perros'
       },
       'addKennelCat' : {
-        title : 'Add cat kennel'
+        title : 'Añadir chenil de gatos'
       },
       'addItemOffice' : {
-        title : 'Add office'
+        title : 'Añadir oficina'
       },
       'addItemTree' : {
-        title : 'Add tree'
+        title : 'Añadir árbol'
       },
       'addItemEntry' : {
-        title : 'Add entry'
+        title : 'Añadir entrada'
       },
       'addItemFaucet' : {
-        title : 'Add faucet'
+        title : 'Añadir fuente'
       },
       'controlPanelInfoLang' : {
         text : 'Info'
       },
       'kennelIdLang' : {
-        text : 'Kennel id:'
+        text : 'Chenil id:'
       },
       'addRecord' : {
-        title : 'Add record'
+        title : 'Añadir ficha'
       },
       'recordLang' : {
-        text : 'Record'
+        text : 'Ficha'
       },
       'controlPanelSaveSimulatorLang' : {
-        text : 'Save simulator'
+        text : 'Simulador de guardado'
       },
       'closeLang1' : {
-        text : 'Close'
+        text : 'Cerrar'
       },
       'closeLang2' : {
-        text : 'Close'
+        text : 'Cerrar'
       },
       'closeLang3' : {
-        text : 'Close'
+        text : 'Cerrar'
       },
       'closeLang4' : {
-        text : 'Close'
+        text : 'Cerrar'
       },
       'speciesLang' : {
-        text : 'Species:'
+        text : 'Especie:'
       },
       'nameLang' : {
-        text : 'Name:'
+        text : 'Nombre:'
       },
       'nameLang1' : {
-        text : 'Name:'
+        text : 'Nombre:'
       },
       'currentKennel' : {
-        text : 'Current kennel:'
+        text : 'Chenil actual:'
       },
       'modalChageChenilTitleLang' : {
-        text : 'Change of kennel'
+        text : 'Cambio de chenil'
       },
       'modalRecordTitleLang' : {
-        text : 'Record'
+        text : 'Ficha'
       },
       'fileName' : {
-        placeholder : 'Name'
+        placeholder : 'Nombre'
       },
       'sexLang' : {
-        text : 'Sex:'
+        text : 'Sexo:'
       },
       'femaleLang' : {
-        text : 'Female'
+        text : 'Hembra'
       },
       'maleLang' : {
-        text : 'Male'
+        text : 'Macho'
       },
       'weightLang' : {
-        text : 'Weight:'
+        text : 'Peso:'
       },
       'fileWeight' : {
-        placeholder : 'Weight'
+        placeholder : 'Peso'
       },
       'raceLang' : {
-        text : 'Race:'
+        text : 'Raza:'
       },
       'fileRace' : {
-        placeholder : 'Race'
+        placeholder : 'Raza'
       },
       'ageLang' : {
-        text : 'Age:'
+        text : 'Edad:'
       },
       'fileAge' : {
-        placeholder : 'Age'
+        placeholder : 'Edad'
       },
       'pickUpDateLang' : {
-        text : 'Pick Up Date:'
+        text : 'Fecha de recogida:'
       },
       'filePickUpDate' : {
-        placeholder : 'Pick Up Date'
+        placeholder : 'Fecha de recogida'
       },
       'sizeLang' : {
-        text : 'Size:'
+        text : 'Tamaño:'
       },
       'toyLang' : {
         text : 'Toy'
       },
       'littleLang' : {
-        text : 'Little'
+        text : 'Pequeño'
       },
       'mediumLang' : {
-        text : 'Medium'
+        text : 'Mediano'
       },
       'bigLang' : {
-        text : 'Big'
+        text : 'Grande'
       },
       'giantLang' : {
-        text : 'Giant'
+        text : 'Gigante'
       },
       'sterilizedLang' : {
-        text : 'Sterilized:'
+        text : 'Esterilizado:'
       },
       'noLang' : {
         text : 'No'
       },
       'yesLang' : {
-        text : 'Yes'
+        text : 'Si'
       },
       'descriptionLang' : {
-        text : 'Description:'
+        text : 'Descripción:'
       },
       'recordOf' : {
-        text : ' Record of: ',
+        text : ' Ficha de: ',
         array: 'span'
       },
       'edifInfoIcon' : {
-        title : 'Edit Record',
+        title : 'Editar ficha',
         array: 'span'
       },
       'changeKennelIcon' : {
-        title : 'Change kennel',
+        title : 'Cambiar chenil',
         array: 'span'
-      }   
-} 
+      }
+}
 
-var LANGS_EN = 
+var LANGS_ES = 
   {
+      'document' : {
+        title  : 'REFUGIO ANIMAL'
+      },
       'dogs' : {
-        text  : 'dogs'
+        text  : 'perros'
       },
       'cats' : {
-        text  : 'cats'
+        text  : 'gatos'
       },
       'area' : {
-        text  : 'Area'
+        text  : 'Área'
       },
       'nameOfTheArea' : {
-        text : 'Name of the area?'
+        text : '¿Nombre del área?'
       },
       'errorRemoveKennelHasAnimals' : {
-        text : 'You cannot remove a kennel that has animals'
+        text : 'No se puede eliminar un chenil que tiene animales'
       },
       'errorRemoveAreaHasAnimals' : {
-        text : 'You cannot delete an area that has animals'
+        text : 'No se puede eliminar un área que tiene animales'
       },
       'errorNotHaveKennelsAvailable' : {
-        text : '<b style="color:red">not have kennels available!</b>'
+        text : '<b style="color:red">¡No tienes cheniles disponibles!</b>'
       },
       'shelterName' : {
-        text : 'Shelter Name?'
+        text : '¿Nombre del Refugio?'
       },
       'recordOf' : {
-        text : ' Record of: '
+        text : ' Ficha de: '
       },
       'kennelsAvailable' : {
-        text : '<b>Kennels available:</b></br>'
+        text : '<b>Cheniles disponibles:</b></br>'
       },
       'actualNumberOf' : {
-        text : 'Actual number of '
+        text : 'Número actual de '
       },
       'idKennel' : {
-        text : 'Kennel id: '
-      },
+        text : 'Chennil id: '
+      },   
       'edifInfoIcon' : {
-        title : 'Edit Record',
+        title : 'Editar ficha',
         array: 'span'
       },
       'changeKennelIcon' : {
-        title : 'Change kennel',
+        title : 'Cambiar chenil',
         array: 'span'
       },
       'linesOfArea' : {
-        text : 'Area lines'
+        text : 'Lineas del área'
       },
       'circlesOfArea' : {
-        text : 'Area circles'
+        text : 'Circulos del área'
       },
       'animals' : {
-        text : 'Animals'
+        text : 'Animales'
       },
       'kennels' : {
-        text  : 'Kennels'
+        text  : 'Cheniles'
       },
       'KENNEL_DOG' : {
-        text  : 'Kennels dogs'
+        text  : 'Cheniles de perros'
       },
       'KENNEL_CAT' : {
-        text  : 'Kennels cats'
+        text  : 'Cheniles de gatos'
       },
       'OFFICE' : {
-        text  : 'Offices'
+        text  : 'Oficinas'
       },
       'TREE' : {
-        text  : 'Trees'
+        text  : 'Árboles'
       },
       'ENTRY' : {
-        text  : 'Entries'
+        text  : 'Entradas'
       },
       'FAUCET' : {
-        text  : 'Faucets'
-      }          
+        text  : 'Fuentes'
+      }              
 }

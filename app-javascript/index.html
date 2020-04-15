@@ -1,6 +1,5 @@
 <html>
   <head>
-    <title>REFUGIO ANIMAL</title>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js"></script>
     <script type="text/javascript" src='js/libs/moment.js'></script>
@@ -18,29 +17,14 @@
     <script type="text/javascript" src='js/form/utils.js'></script>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"                                       rel="stylesheet" type='text/css'>
     <link href='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/css/bootstrap-datetimepicker.min.css' rel='stylesheet' type='text/css'>
-    <style>
-      .glyphicon{
-        cursor: pointer;
-      }
-      .fas{
-        cursor: pointer;
-      }
-      .glyphicon_50 {
-        font-size: 50%;
-      }
-      .glyphicon_200 {
-        font-size: 200%;
-      }
-      .fa-fuente:before {
-        content: url("img/fuente.png");
-      }       
-    </style>
+    <link href='css/app.css' rel='stylesheet' type='text/css'>
   </head>
   <body>
+    
     <div class="btn-group" style="margin:10px;">
       <button type="button" id="addArea" class="btn btn-default btn-lg">
         <span class="glyphicon glyphicon-plus"></span> 
-        <span id="addAreaLang"></span>
+        <span id="addAreaLang">Área</span>
       </button>
       <button type="button" id="deleteArea" class="btn btn-default btn-lg">
         <span class="glyphicon glyphicon-trash"></span> 
@@ -54,16 +38,16 @@
       <button type="button" id="editShelter" class="btn btn-default btn-lg">
         <span class="glyphicon glyphicon-pencil"></span>&nbsp;
       </button>
-      <div class="btn-group" data-toggle="buttons">
-        <label class="btn btn-primary btn-lg active"  onclick="changeLanguage('ES')">
-          <input type="radio" name="lang" id="lang">
-          <span>ES</span>
-        </label>
-        <label class="btn btn-primary btn-lg" onclick="changeLanguage('EN')">
-          <input type="radio" name="lang" id="lang">
-          <span>EN</span>
-        </label>
-      </div>
+    </div>
+    <div class="btn-group" data-toggle="buttons">
+      <label class="btn btn-primary active"  onclick="changeLanguage('ES')">
+        <input type="radio" name="lang" id="lang">
+        <span>ES</span>
+      </label>
+      <label class="btn btn-primary" onclick="changeLanguage('EN')">
+        <input type="radio" name="lang" id="lang">
+        <span>EN</span>
+      </label>
     </div>
 
     <div class="panel panel-default" style="margin:10px;display:none;" id="areaPanel">
@@ -346,7 +330,6 @@
         </div>
       </div>
     </div>
-
   </body>  
 
   <script type="text/javascript" src='js/mainButtons/simulatorSave.js'></script>
@@ -356,5 +339,7 @@
   <script type="text/javascript" src='js/mainButtons/lang.js'></script>
   <script type="text/javascript" src='js/lang/en.js'></script>
   <script type="text/javascript" src='js/lang/es.js'></script>
-  <script>changeLanguage('ES');</script>
+  <script>
+   $(document).ready(function() {changeLanguage('ES');});
+  </script>
 </html>

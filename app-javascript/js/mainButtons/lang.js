@@ -6,6 +6,7 @@ function changeLanguage(lang){
   if(actualLang && actualLang===lang)return;
   resourceLoadLang = eval("LANGS_LOAD_"+lang);
   resourceLang = eval("LANGS_"+lang);
+  document.title = getTextLang('document').title;
   _.each(resourceLoadLang, function(obj,id){    
     var attr = Object.getOwnPropertyNames(obj)[0];
     var translation = obj[Object.getOwnPropertyNames(obj)[0]];
