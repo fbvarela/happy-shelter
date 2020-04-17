@@ -1,0 +1,12 @@
+.glyphicon{
+  cursor: pointer;
+}
+.fas{
+  cursor: pointer;
+}
+.glyphicon_50 {
+  font-size: 50%;
+}
+.glyphicon_200 {
+  font-size: 200%;
+}
