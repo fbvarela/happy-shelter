@@ -1,139 +1,275 @@
 <html>
-
   <head>
-    <title>PERRERA</title>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <meta charset="UTF-8">
+    <script type="text/javascript" src='js/libs/moment.js'></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js"></script>
+    <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js'></script>
     <script type="text/javascript" src="https://unpkg.com/fabric@4.0.0-beta.8/dist/fabric.js"></script>
+    <script type="text/javascript" src="https://kit.fontawesome.com/a076d05399.js"></script>    
+    <script type="text/javascript" src="https://unpkg.com/vue@latest/dist/vue.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/vue-i18n@latest/dist/vue-i18n.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue-icons.min.js"></script>
+    <script type="text/javascript" src='js/globalVariables.js'></script>
+    <script type="text/javascript" src='js/entities/animals.js'></script>
+    <script type="text/javascript" src='js/entities/kennels.js'></script>
+    <script type="text/javascript" src='js/enum/itemEnum.js'></script>
+    <script type="text/javascript" src='js/areagenerator.js'></script>
+    <script type="text/javascript" src='js/panelInfo.js'></script>
+    <script type="text/javascript" src='js/form/utils.js'></script>
+    <script type="text/javascript" src='js/lang/i18n.js'></script>
+    <script type="text/javascript" src='js/canvas.js'></script>
+    <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css"/>
+    <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css"/>
+    <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue-icons.min.css" />
+    <link type='text/css' rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/css/bootstrap-datetimepicker.min.css'>
+    <link type='text/css' rel='stylesheet' href='css/app.css'>
   </head>
-
   <body>
-    
-    <pre data-lang="html">
-          
-      <div class="input-group">
-        <button onclick="AddArea()">Añadir nuevo area</button>
-        <button onclick="SaveMap()">Guardar mapas</button>
-      </div>
-      <div id="mapas">
-        <div class="input-group" id="div_0">
-          <h1>Area Principal</h1>
-          <button onclick="AddLine(0)">Añadir linea</button>
-          <button onclick="RemoveLine(0)">Quitar linea</button>
-          <canvas id="c_0" width="450" height="350" style="border:1px solid #ccc"></canvas>
+
+    <script src="js/vue/common/component.js"></script>
+   
+    <div id="top-buttons" style="margin-top:10px;">
+      <b-container fluid>
+        <b-row>
+          <b-col cols="11">
+            <b-button-group>
+              <buttons_component
+                v-for="button in buttons"
+                @click="button_click"
+                :key="button.id"
+                :prop="button">
+              </buttons_component>
+            </b-button-group>
+          </b-col>
+          <b-col cols="1">
+            <buttons-lang></buttons-lang>
+          </b-col>
+        </b-row>
+      </b-container>
+    </div>
+
+    <script src="js/vue/top_buttons/component.js"></script>
+    <script src="js/vue/top_buttons/vue.js"></script>
+
+    <div id="panel-areas"  style="margin:10px;" v-if="tabs.length!=0">
+        <div>
+          <b-card no-body>
+            <b-tabs card v-model="tabIndex">
+              <b-tab v-for="tab in tabs" :key="'dyn-tab-' + tab.id" :title="tab.title">
+
+                <template>
+                  <div>
+                    <b-sidebar id="sidebar-1" :title="$t('control_panel')" shadow>
+                      <div class="px-3 py-2">
+                        <b-card :header="$t('area')">
+                          <area_sides_control :prop="tab"></area_sides_control>  
+                          <br/>
+                          <area_rotate_control :prop="tab"></area_rotate_control>    
+                        </b-card>
+                        <br/>
+                        <b-button-group> 
+                          <buttons_component
+                            v-for="button in buttons_firts"
+                            @click="button_click"
+                            :key="button.id"
+                            :prop="button"
+                            :tab="tab">
+                          </buttons_component>
+                        </b-button-group>
+                        <br/>
+                        <br/>
+                        <b-button-group> 
+                          <buttons_component
+                            v-for="button in buttons_senconds"
+                            @click="button_click"
+                            :key="button.id"
+                            :prop="button"
+                            :tab="tab">
+                          </buttons_component>
+                        </b-button-group>
+                        <br/>
+                        <br/>
+                        <b-button variant="outline-secondary" block v-b-toggle.sidebar-1>{{$t('close')}}</b-button>
+                      </div>
+                    </b-sidebar>
+                  </div>
+                </template>
+
+                <b-container class="bv-example-row" fluid>
+                  <b-row>
+                    <b-col cols="3">
+                      <b-card :header="$t('info')">
+                        
+                      </b-card> 
+                    </b-col>
+                    <b-col cols="8">
+                      <tabs-area-canvas :prop="tab"></tabs-area-canvas> 
+                    </b-col>
+                    <b-col cols="1">
+                      <b-button size="lg" v-b-toggle.sidebar-1 variant="outline-secondary" :title="$t('control_panel')">
+                        <b-icon icon="controller"></b-icon> 
+                      </b-button>
+                    </b-col>
+                  </b-row>
+                </b-container>     
+              </b-tab>
+            </b-tabs>
+          </b-card>
         </div>
-      </div>  
-    </pre>
-  
-    <script>
-      var canvas = [new fabric.Canvas('c_0', { selection: false })];
-      var num_canvas = 1
-      var lados  = [3];
-      var cx     = 75;
-      var cy     = 100;
-      var r      = 70;
-      function init(id) {
-          fabric.Object.prototype.originX = fabric.Object.prototype.originY = 'center';
-          var a = 360/lados[id];
-          var lines =new Array();
-          for(var i=0;i < lados[id];i++){
-              var aRad=  (Math.PI / 180) * (a*(i+1));
-              Xp = cx+r * Math.cos(aRad);
-              Yp = cy+r * Math.sin(aRad);
-              lines[i]={x2:Xp, y2:Yp};
-              if(i != 0){
-                lines[i] = makeLine([lines[i-1].x2, lines[i-1].y2, Xp, Yp]);
-                canvas[id].add(lines[i]);
-                if(i != 1){
-                  canvas[id].add(makeCircle(lines[i].get('x1'), lines[i].get('y1'), lines[i-1], lines[i]));
-                }               
-                if(i == lados[id]-1){
-                  lines[0] = makeLine([Xp, Yp, lines[0].x2, lines[0].y2]);
-                  canvas[id].add(
-                    lines[0],
-                    makeCircle(lines[0].get('x1'), lines[0].get('y1'), lines[lines.length-1], lines[0]),
-                    makeCircle(lines[1].get('x1'), lines[1].get('y1'), lines[0], lines[1])
-                  );         
-                }
-              }              
-          }
+    </div>
 
-          canvas[id].on('object:moving', function(e) {
-            var p = e.target;
-            p.line1 && p.line1.set({ 'x2': p.left, 'y2': p.top });
-            p.line2 && p.line2.set({ 'x1': p.left, 'y1': p.top });
-            canvas[id].renderAll();          
-          });
+    <script src="js/vue/panel_areas/component.js"></script>
+    <script src="js/vue/panel_areas/vue.js"></script>
+    
+    <div class="panel panel-default" style="margin:10px;display:none;" id="simulatorSavePanel">
+      <div class="panel-heading">
+        <h3 class="panel-title"><span id="controlPanelSaveSimulatorLang"></span></h3>
+      </div>
+      <div class="panel-body" id="simulatorSavePanelBody" style=" word-wrap: break-word;"></div>
+    </div>    
+    
+    <div class="modal fade" id="modalChageChenil" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">
+              <span aria-hidden="true">&times;</span><span class="sr-only"><span id="closeLang1"></span></span>
+            </button>
+            <h4 class="modal-title" id="myModalLabel"><span id="modalChageChenilTitleLang"></span></h4>
+          </div>
+          <div class="modal-body">
+            <form role="form" id="formChangeChennil">
+              <input type="hidden"  name="idAnimal">
+              <div class="form-group">
+                <label><span id="speciesLang"></span></label> <span id="species"></span><br/>
+              </div>
+              <div class="form-group">
+                <label><span id="nameLang"></span></label> <span id="name"></span><br/>
+              </div>
+              <div class="form-group">
+                <label><span id="currentKennel"></span></label> <span id="actualChenil"></span><br/>
+              </div>
+              <div class="form-group">
+                <span id="chenilDisponibles"></span>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal"><span id="closeLang2"></span></button>
+            <button type="button" class="btn btn-primary" id="saveChangeChenilBtn" onclick="saveChangeChenil()"><span id="saveLang2"></span></button>
+          </div>
+        </div>
+      </div>
+    </div>
 
-      }
+    <div class="modal fade" id="modalFile" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">
+              <span aria-hidden="true">&times;</span><span class="sr-only"><span id="closeLang3"></span></span>
+            </button>
+            <h4 class="modal-title" id="myModalLabel"><span id="modalRecordTitleLang"></span></h4>
+          </div>
+          <div class="modal-body">
+            <form role="form" id="formFile">
+              <div class="form-group">
+                <label for="name"><span id="nameLang1"></span></label>
+                <input type="text"  name="id" style="display:none;">
+                <input type="hidden"  name="idKennel">
+                <input type="hidden"  name="species">
+                <input type="text"  class="form-control" id="fileName" name="name"> 
+              </div>
+              <div class="form-group">
+                <label for="sex"><span id="sexLang"></span></label><br/>
+                <div class="btn-group" data-toggle="buttons">
+                  <label class="btn btn-primary">
+                    <input type="radio" name="sex" id="sex" value="female">
+                    <span id="femaleLang"></span>
+                  </label>
+                  <label class="btn btn-primary">
+                    <input type="radio" name="sex" id="sex" value="male">
+                    <span id="maleLang"></span>
+                  </label>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="weight"><span id="weightLang"></span></label>
+                <input type="text" class="form-control" id="fileWeight" name="weight">
+              </div>
+              <div class="form-group">
+                <label for="race"><span id="raceLang"></span></label>
+                <input type="text" class="form-control" id="fileRace" name="race">
+              </div> 
+              <div class="form-group">
+                <label for="race"><span id="ageLang"></span></label>
+                <input type="text" class="form-control" id="fileAge" name="age">
+              </div>  
+              <div class="form-group">
+                <label for="race"><span id="pickUpDateLang"></span></label>
+                <div class="input-group date" data-provide="datepicker" id="dpPickUpDate">
+                  <input type="text" class="form-control" id="filePickUpDate" name="pickUpDate">
+                  <div class="input-group-addon">
+                      <span class="glyphicon glyphicon-th"></span>
+                  </div>
+                </div> 
+              </div>
+              <div class="form-group">
+                <label for="size"><span id="sizeLang"></span></label><br/>
+                <div class="btn-group" data-toggle="buttons">
+                  <label class="btn btn-primary">
+                    <input type="radio" name="size" id="size" value="toy">
+                    <span id="toyLang"></span>
+                  </label>
+                  <label class="btn btn-primary">
+                    <input type="radio" name="size" id="size" value="little">
+                    <span id="littleLang"></span>
+                  </label>
+                  <label class="btn btn-primary">
+                    <input type="radio" name="size" id="size" value="medium">
+                    <span id="mediumLang"></span>
+                  </label>
+                  <label class="btn btn-primary">
+                    <input type="radio" name="size" id="size" value="big">
+                    <span id="bigLang"></span>
+                  </label>
+                  <label class="btn btn-primary">
+                    <input type="radio" name="size" id="size" value="gigante">
+                    <span id="giantLang"></span>
+                  </label>
+                </div>
+              </div>      
+              <div class="form-group">
+                <label for="sterilized"><span id="sterilizedLang"></span></label><br/>
+                <div class="btn-group" data-toggle="buttons">
+                  <label class="btn btn-primary">
+                    <input type="radio" name="sterilized" id="sterilized" value="no">
+                    <span id="noLang"></span>
+                  </label>
+                  <label class="btn btn-primary">
+                    <input type="radio" name="sterilized" id="sterilized" value="yes">
+                    <span id="yesLang"></span>
+                  </label>
+                </div>
+              </div>  
+              <div class="form-group">
+                <label for="description"><span id="descriptionLang"></span></label>
+                <textarea class="form-control"  name="description" id="description" rows="3"></textarea>
+              </div>  
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal"><span id="closeLang4"></span></button>
+            <button type="button" class="btn btn-primary" onclick="saveFile()"><span id="saveLang3"></span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>  
 
-      function makeCircle(left, top, line1, line2) {
-        var c = new fabric.Circle({
-          left: left,
-          top: top,
-          strokeWidth: 1,
-          radius: 3,
-          fill: '#fff',
-          stroke: '#666'
-        });
-        c.hasControls = c.hasBorders = false;
-        c.line1 = line1;
-        c.line2 = line2;
-        return c;
-      }
-
-      function makeLine(coords) {
-        return new fabric.Line(coords, {
-          fill: 'red',
-          stroke: 'red',
-          strokeWidth: 1,
-          selectable: false,
-          evented: false
-        });
-      }
-
-      init(0);
-
-      function RemoveLine(id) {
-        if(lados[id]!=3){
-          canvas[id].clear();
-          var newLados= lados[id]-1;
-          lados[id]=newLados;
-          init(id);  
-        }            
-      }
-      function AddLine(id) {
-        canvas[id].clear();
-        var newLados= lados[id]+1;
-        lados[id]=newLados;
-        init(id);      
-      }
-      function AddArea() {
-        var nombreArea=prompt('¿Nombre del nuevo AREA?');
-        var capa = document.getElementById("mapas");
-        var div = document.createElement('div');
-        div.setAttribute("id", "div_"+lados.length);
-        div.setAttribute("class", "input-group");
-        capa.appendChild(div);
-        var newDiv = document.getElementById("div_"+lados.length);
-        newDiv.innerHTML += '<h1>'+nombreArea+'</h1><button onclick="AddLine('+lados.length+
-        ')">Añadir linea</button><button onclick="RemoveLine('+lados.length+
-        ')">Quitar linea</button><canvas id="c_'+lados.length+
-        '" width="250" height="250" style="border:1px solid #ccc"></canvas>';
-        
-        canvas[lados.length]=new fabric.Canvas('c_'+lados.length, { selection: false });
-        lados[lados.length]=3;
-        init(lados.length-1);
-      }
-      function SaveMap() {
-        for(var i=0;i < canvas._objects.length;i++){
-          if(canvas._objects[i].x1){
-            console.log("linea1 x1="+canvas._objects[i].x1+" y1="+canvas._objects[i].y1);
-          }
-         
-        } 
-      }
-    </script>
-
-  </body>
+  <script type="text/javascript" src='js/mainButtons/simulatorSave.js'></script>
+  <script type="text/javascript" src='js/mainButtons/addArea.js'></script>
+  <script type="text/javascript" src='js/mainButtons/deleteArea.js'></script>
 </html>
