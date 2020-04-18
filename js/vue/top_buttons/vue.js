@@ -46,15 +46,14 @@ var vue_top_buttons = new Vue({
       !new_shelter_name || !new_shelter_name.trim() ? false : prop.alternative_text=new_shelter_name;
     },
     add_new_area: function(){
-      vue_panel_areas.add_new_tab();      
-      //addAreaPENDINGMIGRATE();
+      vue_panel_areas.add_new_tab();
     },
     delete_last_area: function(){
-      vue_panel_areas.dalete_last_tab();  
+      vue_panel_areas.delete_last_tab();  
       //deleteAreaPENDINGMIGRATE();
     },
     save: function(){
-      savePENDINGMIGRATE();
+      vue_panel_areas.simulator_save_show();
     }          
   }
 })

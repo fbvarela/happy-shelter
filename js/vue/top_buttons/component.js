@@ -13,6 +13,7 @@ var buttons_lang_component = {
   methods: {
     change_lang: function (lang) {
       i18n.locale=lang;
+      document.title=this.$t('document_title');
     }
   },
   template:`

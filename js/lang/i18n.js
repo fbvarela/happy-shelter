@@ -1,5 +1,6 @@
 const messages = {
   ES: {
+      document_title: 'REFUGIO ANIMAL',
       close: 'Cerrar',
       area: 'Área',
       area_name: 'Área {num}',
@@ -9,7 +10,7 @@ const messages = {
       edit_shelter_name: 'Editar nombre del refugio',
       name_of_area: '¿Nombre del área?',
       control_panel : 'Panel de control',
-      info : 'Info',
+      kennel_info_panel: 'Información',
       shelter_name: '¿Nombre del Refugio?',
       remove_side: 'Eliminar un punto del área',
       add_side: 'Añadir un punto al área',
@@ -25,9 +26,23 @@ const messages = {
       add_item_tree: 'Añadir árbol',
       add_item_entry: 'Añadir entrada',
       add_item_faucet: 'Añadir fuente',
-      error_remove_kennel_has_animals: 'No se puede eliminar un chenil que tiene animales'
+      error_remove_kennel_has_animals: 'No se puede eliminar un chenil que tiene animales',
+      simulator_save : 'Simulador de guardado',
+      lines_of_area: 'Lineas del área',
+      lines_of_circles: 'Circulos del área',
+      KENNEL_DOG: 'Cheniles de perros',
+      KENNEL_CAT: 'Cheniles de gatos',
+      OFFICE: 'Oficinas',
+      TREE: 'Árboles',
+      ENTRY: 'Entradas',
+      FAUCET: 'Fuentes',
+      animals: 'Animales',
+      kennels: 'Cheniles',
+      edit_area_name: 'Editar nombre del área'
+
   },
   EN: {
+      document_title: 'REFUGE ANIMAL',
       close: 'Close',
       area: 'Area ',
       area_name: 'Area {num}',
@@ -37,7 +52,7 @@ const messages = {
       edit_shelter_name: 'Edit shelter name',
       name_of_area: 'Name of the area?',
       control_panel : 'Control Panel',
-      info : 'Info',
+      kennel_info_panel: 'Info',
       shelter_name: 'Shelter Name?',
       remove_side: 'Remove a point from the area',
       add_side: 'Add a point to the area',
@@ -53,7 +68,20 @@ const messages = {
       add_item_tree: 'Add tree',
       add_item_entry: 'Add entry',
       add_item_faucet: 'Add faucet',
-      error_remove_kennel_has_animals: 'You cannot remove a kennel that has animals'
+      error_remove_kennel_has_animals: 'You cannot remove a kennel that has animals',
+      simulator_save : 'Save simulator',
+      lines_of_area: 'Area lines',
+      lines_of_circles: 'Area circles',
+      KENNEL_DOG: 'Kennels dogs',
+      KENNEL_CAT: 'Kennels cats',
+      OFFICE: 'Offices',
+      TREE: 'Trees',
+      ENTRY: 'Entries',
+      FAUCET: 'Faucets',
+      animals: 'Animals',
+      kennels: 'Kennels',
+      edit_area_name: 'Edit area name'
+
   }
 }
 

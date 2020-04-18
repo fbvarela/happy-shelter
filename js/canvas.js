@@ -67,18 +67,19 @@ function canvas_events_load(canvas){
     },     
     'selection:created': function(e) {
       if(e.target && e.target.id!=undefined){ 
+        click_panel_info();
         showInfo( e.target.id);                 
       }
     },
     'selection:updated': function(e) {
-      if(e.target && e.target.id!=undefined){        
+      if(e.target && e.target.id!=undefined){     
         showInfo(e.target.id);       
       }else{
-        getSelectorTabActive('#info').hide();
+        click_panel_info(); 
       }
     },
     'before:selection:cleared': function() {
-        getSelectorTabActive('#info').hide();
+      click_panel_info();
     },
     'mouse:over': function() {
 
@@ -87,6 +88,12 @@ function canvas_events_load(canvas){
 
     },   
   });
+}
+
+function click_panel_info(){
+  let vue_data = vue_panel_areas.$data;
+  let tabIndex = vue_data.tabIndex;
+  $('#sidebar-panel-info-btn-show-'+tabIndex).click(); 
 }
 
 function make_image(canvas,item){  

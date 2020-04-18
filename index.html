@@ -61,7 +61,12 @@
 
                 <template>
                   <div>
-                    <b-sidebar id="sidebar-1" :title="$t('control_panel')" shadow>
+                    <b-sidebar :id="'sidebar-control-panel-'+ tab.id" :title="$t('control_panel')" shadow>
+                      <template v-slot:footer="{ hide }">
+                        <div class="d-flex text-light align-items-center px-3 py-2">
+                          <b-button variant="outline-secondary" block v-b-toggle="'sidebar-control-panel-'+tab.id">{{$t('close')}}</b-button>
+                        </div>
+                      </template>
                       <div class="px-3 py-2">
                         <b-card :header="$t('area')">
                           <area_sides_control :prop="tab"></area_sides_control>  
@@ -88,10 +93,19 @@
                             :prop="button"
                             :tab="tab">
                           </buttons_component>
-                        </b-button-group>
-                        <br/>
-                        <br/>
-                        <b-button variant="outline-secondary" block v-b-toggle.sidebar-1>{{$t('close')}}</b-button>
+                        </b-button-group>                      
+                      </div>
+                    </b-sidebar>
+                  </div>
+                </template>
+
+                <template>
+                  <div>
+                    <b-sidebar :id="'sidebar-panel-info-'+ tab.id" no-header right shadow>
+                      <div class="px-3 py-2">
+                        <h4 class="b-sidebar-header"><strong>{{ $t('kennel_info_panel') }}</strong></h4>
+                        
+                        
                       </div>
                     </b-sidebar>
                   </div>
@@ -100,17 +114,24 @@
                 <b-container class="bv-example-row" fluid>
                   <b-row>
                     <b-col cols="3">
-                      <b-card :header="$t('info')">
-                        
-                      </b-card> 
                     </b-col>
                     <b-col cols="8">
                       <tabs-area-canvas :prop="tab"></tabs-area-canvas> 
                     </b-col>
                     <b-col cols="1">
-                      <b-button size="lg" v-b-toggle.sidebar-1 variant="outline-secondary" :title="$t('control_panel')">
-                        <b-icon icon="controller"></b-icon> 
-                      </b-button>
+                      <b-button-group vertical> 
+                        <b-button size="lg" v-b-toggle="'sidebar-control-panel-'+tab.id" variant="outline-secondary" :title="$t('control_panel')">
+                          <b-icon icon="controller"></b-icon> 
+                        </b-button>
+                        <b-button hidden :id="'sidebar-panel-info-btn-show-'+tab.id" v-b-toggle="'sidebar-panel-info-'+tab.id">
+                        </b-button>
+                        <b-button variant="outline-secondary" 
+                                  size="lg" 
+                                  @click="edit_area_name(tab)" 
+                                  :title="$t('edit_area_name')">
+                          <b-icon icon="pencil"></b-icon>
+                        </b-button>
+                      </b-button-group>
                     </b-col>
                   </b-row>
                 </b-container>     
@@ -122,14 +143,18 @@
 
     <script src="js/vue/panel_areas/component.js"></script>
     <script src="js/vue/panel_areas/vue.js"></script>
+
+    <b-card id="simulator_save" :header="$t('simulator_save')" style="margin:10px;"  v-if="show">                
+      <template v-for="text in texts">
+        <b-card-text>
+          {{text}}
+        </b-card-text>
+      </template>
+    </b-card> 
+
+    <script src="js/vue/simulator_save/vue.js"></script>
     
-    <div class="panel panel-default" style="margin:10px;display:none;" id="simulatorSavePanel">
-      <div class="panel-heading">
-        <h3 class="panel-title"><span id="controlPanelSaveSimulatorLang"></span></h3>
-      </div>
-      <div class="panel-body" id="simulatorSavePanelBody" style=" word-wrap: break-word;"></div>
-    </div>    
-    
+        
     <div class="modal fade" id="modalChageChenil" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -268,8 +293,9 @@
       </div>
     </div>
   </body>  
-
-  <script type="text/javascript" src='js/mainButtons/simulatorSave.js'></script>
-  <script type="text/javascript" src='js/mainButtons/addArea.js'></script>
+  
   <script type="text/javascript" src='js/mainButtons/deleteArea.js'></script>
+  <script type="text/javascript">
+     document.title=vue_top_buttons.$t('document_title');
+  </script>
 </html>

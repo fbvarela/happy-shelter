@@ -54,8 +54,8 @@ var vue_panel_areas = new Vue({
   methods: {
     add_new_tab: function(){
       let tabs         = this.$data.tabs;
-      let new_tabs_id  = tabs.length+1;
-      let area_name = prompt(this.$t('name_of_area'),this.$t('area_name',{ num: new_tabs_id }));
+      let new_tabs_id  = tabs.length;
+      let area_name = prompt(this.$t('name_of_area'),this.$t('area_name',{ num: new_tabs_id+1 }));
       if(!area_name || !area_name.trim())return;
       tabs.push({
         id:new_tabs_id,
@@ -63,10 +63,23 @@ var vue_panel_areas = new Vue({
         area_sides:DEFAULT_SIDES,
       });
     },
-    dalete_last_tab: function (){
+    delete_last_tab: function (){
       let tabs  = this.$data.tabs;
       if(tabs.length==0)return;
       tabs.pop();
+      simulator_save.$data.show=tabs.length!=0;
+    },
+    edit_area_name: function (tab){
+      let area_name = prompt(this.$t('name_of_area'),tab.title);
+      if(!area_name || !area_name.trim())return;
+      tab.title=area_name;
+    },
+    simulator_save_show: function (){
+      let tabs  = this.$data.tabs;
+      simulator_save.$data.show=tabs.length!=0;
+      if(simulator_save.$data.show){
+        simulator_save.generate_info();
+      }
     },
     button_click: function (prop, tab) {
       this[prop.click](tab);
