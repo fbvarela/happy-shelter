@@ -41,24 +41,21 @@ function appendItems(item, arrayData, params){
 }
 
 function savePENDINGMIGRATE() {
-  if(areaPanel.is(":hidden")){
-    return;
-  }
   simulatorSavePanel.show();
   simulatorSavePanelBody.empty();
   var infoKennel = ['type','left','top','width','height','scaleX','scaleY','itemType','id'];
   var infoObject = ['type','left','top','width','height','scaleX','scaleY','itemType'];
   var infoCircle = ['left','top',"line1,x1","line1,y1","line1,x2","line1,y2","line2,x1","line2,y1","line2,x2","line2,y2"];
   var infoLine   = ['x1','y1','x2','y2','scaleX','scaleY'];
-  _.each(canvas, function (canva,i) { 
+  _.each(vue_panel_areas.$data.tabs, function (tabs) { 
+    let canva = tabs.canvas;
     var KENNEL_DOG = filterItemsCanvas(canva, ITEM.KENNEL_DOG.id);
     var KENNEL_CAT = filterItemsCanvas(canva, ITEM.KENNEL_CAT.id);
     var OFFICE     = filterItemsCanvas(canva, ITEM.OFFICE.id);
     var TREE       = filterItemsCanvas(canva, ITEM.TREE.id);
     var FAUCET     = filterItemsCanvas(canva, ITEM.FAUCET.id);
     var ENTRY      = filterItemsCanvas(canva, ITEM.ENTRY.id);
-    var titleArea  = getTabName(i);
-    appendTitle('------------------ Init ------------------', titleArea);
+    appendTitle('------------------ Init ------------------', tabs.title);
     appendItems({id:getTextLang('linesOfArea').text},canva.getObjects('line'),infoLine);
     appendItems({id:getTextLang('circlesOfArea').text},canva.getObjects('circle'),infoCircle);
     appendItems(ITEM.KENNEL_DOG,KENNEL_DOG,infoKennel);
@@ -67,7 +64,7 @@ function savePENDINGMIGRATE() {
     appendItems(ITEM.TREE,TREE,infoObject);  
     appendItems(ITEM.FAUCET,FAUCET,infoObject);  
     appendItems(ITEM.ENTRY,ENTRY,infoObject);
-    appendTitle('------------------ End ------------------', titleArea);
+    appendTitle('------------------ End ------------------', tabs.title);
   });   
 
   appendTitle(getTextLang('animals').text, animals.length);

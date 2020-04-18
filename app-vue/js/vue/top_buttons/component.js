@@ -1,37 +1,28 @@
-var buttons_main_component = {
-  props: {
-    prop : {
-      click         : String,
-      class         : String,
-      text          : String,
-      title         : String,
-      shelter_name  : String 
-    }          
-  },
-  data(){
+var buttons_lang_component = {
+  data (){
+    let ES ='ES';
+    let EN ='EN';
     return {
-        text: this.$props.prop.text,
-        title: this.$props.prop.title
+      selected: ES,
+      options: [
+        { text:ES, value: ES },
+        { text:EN, value: EN }
+      ]
     }
   },
-  template: `
-    <span @click="$emit('click', prop)" :title="$t(title)" 
-          class="btn btn-default btn-lg">
-      <span class="glyphicon" :class="prop.class"></span>
-      <span>{{ $t(text) }} {{prop.shelter_name}}</span>
-    </span>
-  `
-}
-var buttons_lang_component = {
-  props: {
-    prop :  {
-      lang  : String,
-      class : String
+  methods: {
+    change_lang: function (lang) {
+      i18n.locale=lang;
     }
   },
   template:`
-    <label @click="$emit('click', prop)" class="btn btn-primary" :class="prop.class">
-      <input type="radio"><span>{{prop.lang}}</span>
-    </label>
+    <b-form-radio-group
+          buttons
+          @change="change_lang" 
+          v-model="selected"
+          :options="options"
+          button-variant="outline-primary"
+          size="sm">
+    </b-form-radio-group>
   `
 }

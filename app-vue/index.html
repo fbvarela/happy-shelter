@@ -1,191 +1,128 @@
 <html>
   <head>
+    <meta charset="UTF-8">
     <script type="text/javascript" src='js/libs/moment.js'></script>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js"></script>
-    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
     <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js'></script>
     <script type="text/javascript" src="https://unpkg.com/fabric@4.0.0-beta.8/dist/fabric.js"></script>
     <script type="text/javascript" src="https://kit.fontawesome.com/a076d05399.js"></script>    
-    <script type="text/javascript" src="https://unpkg.com/vue/dist/vue.js"></script>
-    <script type="text/javascript" src="https://unpkg.com/vue-i18n/dist/vue-i18n.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/vue@latest/dist/vue.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/vue-i18n@latest/dist/vue-i18n.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue-icons.min.js"></script>
     <script type="text/javascript" src='js/globalVariables.js'></script>
     <script type="text/javascript" src='js/entities/animals.js'></script>
     <script type="text/javascript" src='js/entities/kennels.js'></script>
     <script type="text/javascript" src='js/enum/itemEnum.js'></script>
     <script type="text/javascript" src='js/areagenerator.js'></script>
     <script type="text/javascript" src='js/panelInfo.js'></script>
-    <script type="text/javascript" src='js/controlPanel.js'></script>
     <script type="text/javascript" src='js/form/utils.js'></script>
-    <script type="text/javascript" src='js/mainButtons/lang.js'></script>
-    <script type="text/javascript" src='js/lang/en.js'></script>
-    <script type="text/javascript" src='js/lang/es.js'></script>
     <script type="text/javascript" src='js/lang/i18n.js'></script>
-    <link   type='text/css' href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
-    <link   type='text/css' href='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/css/bootstrap-datetimepicker.min.css' rel='stylesheet'>
-    <link   type='text/css' href='css/app.css' rel='stylesheet'>
-   
+    <script type="text/javascript" src='js/canvas.js'></script>
+    <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css"/>
+    <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css"/>
+    <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue-icons.min.css" />
+    <link type='text/css' rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/css/bootstrap-datetimepicker.min.css'>
+    <link type='text/css' rel='stylesheet' href='css/app.css'>
   </head>
   <body>
 
-    <div id="top-buttons">
-      <div class="btn-group" style="margin:10px;">
-        <buttons-main
-          v-for="button in buttons"
-          @click="button_click"
-          :key="button.id"
-          :prop="button">
-        </buttons-main>
-      </div>
-      <div class="btn-group" data-toggle="buttons">
-        <buttons-lang
-          v-for="lang in langs"
-          @click="button_click"
-          :key="lang.id"
-          :prop="lang">
-        </buttons-lang>
-      </div>
+    <script src="js/vue/common/component.js"></script>
+   
+    <div id="top-buttons" style="margin-top:10px;">
+      <b-container fluid>
+        <b-row>
+          <b-col cols="11">
+            <b-button-group>
+              <buttons_component
+                v-for="button in buttons"
+                @click="button_click"
+                :key="button.id"
+                :prop="button">
+              </buttons_component>
+            </b-button-group>
+          </b-col>
+          <b-col cols="1">
+            <buttons-lang></buttons-lang>
+          </b-col>
+        </b-row>
+      </b-container>
     </div>
 
     <script src="js/vue/top_buttons/component.js"></script>
     <script src="js/vue/top_buttons/vue.js"></script>
 
-    <div class="panel panel-default" style="margin:10px;display:none;" id="areaPanel">
-      <div class="panel-body">
-        <ul class="nav nav-tabs" role="tablist" id="areaPanelTab"></ul>
-        <div class="tab-content" id="areaPanelTabContent"></div>
-      </div>
+    <div id="panel-areas"  style="margin:10px;" v-if="tabs.length!=0">
+        <div>
+          <b-card no-body>
+            <b-tabs card v-model="tabIndex">
+              <b-tab v-for="tab in tabs" :key="'dyn-tab-' + tab.id" :title="tab.title">
+
+                <template>
+                  <div>
+                    <b-sidebar id="sidebar-1" :title="$t('control_panel')" shadow>
+                      <div class="px-3 py-2">
+                        <b-card :header="$t('area')">
+                          <area_sides_control :prop="tab"></area_sides_control>  
+                          <br/>
+                          <area_rotate_control :prop="tab"></area_rotate_control>    
+                        </b-card>
+                        <br/>
+                        <b-button-group> 
+                          <buttons_component
+                            v-for="button in buttons_firts"
+                            @click="button_click"
+                            :key="button.id"
+                            :prop="button"
+                            :tab="tab">
+                          </buttons_component>
+                        </b-button-group>
+                        <br/>
+                        <br/>
+                        <b-button-group> 
+                          <buttons_component
+                            v-for="button in buttons_senconds"
+                            @click="button_click"
+                            :key="button.id"
+                            :prop="button"
+                            :tab="tab">
+                          </buttons_component>
+                        </b-button-group>
+                        <br/>
+                        <br/>
+                        <b-button variant="outline-secondary" block v-b-toggle.sidebar-1>{{$t('close')}}</b-button>
+                      </div>
+                    </b-sidebar>
+                  </div>
+                </template>
+
+                <b-container class="bv-example-row" fluid>
+                  <b-row>
+                    <b-col cols="3">
+                      <b-card :header="$t('info')">
+                        
+                      </b-card> 
+                    </b-col>
+                    <b-col cols="8">
+                      <tabs-area-canvas :prop="tab"></tabs-area-canvas> 
+                    </b-col>
+                    <b-col cols="1">
+                      <b-button size="lg" v-b-toggle.sidebar-1 variant="outline-secondary" :title="$t('control_panel')">
+                        <b-icon icon="controller"></b-icon> 
+                      </b-button>
+                    </b-col>
+                  </b-row>
+                </b-container>     
+              </b-tab>
+            </b-tabs>
+          </b-card>
+        </div>
     </div>
 
-    <div id="hiddenRow" style="display:none;">
-      <div class="row">
-        <div class="col-md-3">
-          <div class="panel panel-default">
-            <div class="panel-heading"><span id="controlPanelLang"></span></div>
-            <div class="panel-body">
-              <div class="panel panel-default">
-                <div class="panel-heading"><span id="controlPanelAreaLang"></div>
-                <div class="panel-body">
-                  <div class="row" style="text-align: center;">
-                    <div class="col-md-12">
-                      <div class="btn-group">
-                        <button type="button" id="removeLine" class="btn btn-default" style="height:34px" 
-                          onclick="removeLine()">
-                          <span class="glyphicon glyphicon-minus"></span>
-                        </button>
-                        <span type="button" class="btn btn-default" style="cursor:default;">
-                          <span id="numberPointsAreaLang"></span>
-                          <span id="numberPointsArea"></span>
-                        </span>
-                        <button type="button" id="addLine" class="btn btn-default" style="height:34px"  
-                          onclick="addLine()">
-                          <span class="glyphicon glyphicon-plus"></span>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-md-12">&nbsp;</div>
-                  </div>
-                  <div class="row" style="text-align: center;">
-                    <div class="col-md-12">
-                      <div class="btn-group">
-                        <button type="button" id="rotateLeft" class="btn btn-default" style="height:34px"  onclick="rotate('left')">
-                          <span class="glyphicon glyphicon-chevron-left"></span>
-                        </button>
-                        <select id="grados"   class="btn btn-default" style="height:34px"><option value="-20">20°</option><option value="-45">45°</option><option value="-60">60°</option><option value="-90">90°</option><option value="-180">180°</option></select>
-                        <button type="button"  id="rotateRight" class="btn btn-default" style="height:34px"  onclick="rotate('right')">
-                          <span class="glyphicon glyphicon-chevron-right"></span>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-md-12">&nbsp;</div>
-                  </div>
-                </div>
-              </div>    
-              <div class="row" style="text-align: center;">   
-                <div class="col-md-12">
-                  <div class="btn-group">
-                    <button type="button" id="addKennelDog" onclick="addKennelItem(new item(ITEM.KENNEL_DOG.id))" class="btn btn-default btn-lg">
-                      <span class="fas fa-dog" style="font-size:36px"></span>
-                    </button>
-                    <button type="button" id="addKennelCat" onclick="addKennelItem(new item(ITEM.KENNEL_CAT.id))" class="btn btn-default btn-lg">
-                      <span class="fas fa-cat" style="font-size:36px"></span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-12">&nbsp;</div>
-              </div>
-              <div class="row" style="text-align: center;">   
-                <div class="col-md-12">
-                  <div class="btn-group">
-                    <button type="button" id="addItemOffice" onclick="addItem(new item(ITEM.OFFICE.id))" class="btn btn-default btn-lg">
-                      <span class="glyphicon_200 glyphicon glyphicon-home"></span>
-                    </button>
-                    <button type="button" id="addItemTree" onclick="addItem(new item(ITEM.TREE.id))" class="btn btn-default btn-lg">
-                      <span class="fas fa-tree" style="font-size:36px"></span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-12">&nbsp;</div>
-              </div>
-              <div class="row" style="text-align: center;">   
-                <div class="col-md-12">
-                  <div class="btn-group">
-                    <button type="button" id="addItemEntry" onclick="addItem(new item(ITEM.ENTRY.id))" class="btn btn-default btn-lg">
-                      <span class="fas fa-door-open" style="font-size:36px"></span>
-                    </button>
-                    <button type="button" id="addItemFaucet" onclick="addItem(new item(ITEM.FAUCET.id))" class="btn btn-default btn-lg">
-                      <span class="fas fa-faucet" style="font-size:36px"></span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <canvas width="600" height="400" style="border:1px solid #ccc"></canvas>
-        </div>
-        <div class="col-md-3">
-          <div class="panel panel-default">
-            <div class="panel-heading"><span id="controlPanelInfoLang"></span></div>
-            <div class="panel-body" id="info" style="display: none;">
-              <div class="row">
-                <div class="col-md-5" style="text-align: right;">
-                  <span id="kennelIdLang"></span>
-                </div>
-                <div class="col-md-7">
-                  <span id="chenilId"></span>
-                </div>
-              </div>    
-              <div class="row">
-                <div class="col-md-12">&nbsp;</div>
-              </div>        
-              <div class="row">
-                <div class="col-md-12" style="text-align: center;">
-                  <button type="button" id="addRecord" onclick="addRecord()" class="btn btn-default btn-lg">
-                    <span class="glyphicon glyphicon-plus"></span>
-                    <span id="recordLang"></span>
-                  </button>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-12">&nbsp;</div>
-              </div>   
-              <div id="infoFiles"></div>
-            </div>
-            </div>
-        </div>
-      </div>
-    </div>
-
+    <script src="js/vue/panel_areas/component.js"></script>
+    <script src="js/vue/panel_areas/vue.js"></script>
+    
     <div class="panel panel-default" style="margin:10px;display:none;" id="simulatorSavePanel">
       <div class="panel-heading">
         <h3 class="panel-title"><span id="controlPanelSaveSimulatorLang"></span></h3>
@@ -335,7 +272,4 @@
   <script type="text/javascript" src='js/mainButtons/simulatorSave.js'></script>
   <script type="text/javascript" src='js/mainButtons/addArea.js'></script>
   <script type="text/javascript" src='js/mainButtons/deleteArea.js'></script>
-  <script>
-   $(document).ready(function() {changeLanguage('ES');});
-  </script>
 </html>

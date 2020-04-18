@@ -28,7 +28,7 @@ const ITEM = {
 }
 
 class item  {
-  constructor(item, areaId) {
+  constructor(item) {
     switch(item) {
       case ITEM.KENNEL_DOG.id:
         this.id  = ITEM.KENNEL_DOG.id;
